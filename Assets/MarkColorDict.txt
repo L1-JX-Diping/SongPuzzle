@@ -1,0 +1,3 @@
+YELLOW, Heart
+GREEN, Spade
+RED, Diamond
