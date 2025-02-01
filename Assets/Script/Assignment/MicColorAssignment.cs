@@ -7,7 +7,6 @@ using TMPro; // Scene の切り替えしたい場合に必要な宣言
 
 public class AssignmentManager : MonoBehaviour
 {
-    private string _outputFileName = "MicColorInfo.txt"; // 出力ファイル名
     private List<string> _microphoneNameList = new List<string>(); // 検出されたマイク名
     private List<ColorInfo> _assignmentInfoList = new List<ColorInfo>(); // 割り当てたマイクと色の情報
     private Dictionary<string, string> _markColorDict = new Dictionary<string, string>();
@@ -42,7 +41,7 @@ public class AssignmentManager : MonoBehaviour
         // マークと色の対応を保存
         SaveMarkDictToFile();
 
-        // ボタンが押されたらこれを実行
+        // ボタンが押されたらこれを実行 Save file / Switch Scene
         //GameObject.Find("ButtonStart").GetComponent<Button>().onClick.AddListener(ButtonClicked);
     }
 
@@ -245,7 +244,7 @@ public class AssignmentManager : MonoBehaviour
 
     private void SaveColorInfoToFile()
     {
-        string filePath = Path.Combine(Application.dataPath, _outputFileName);
+        string filePath = Path.Combine(Application.dataPath, FileNameManager.MicAssignment);
 
         using (StreamWriter writer = new StreamWriter(filePath))
         {

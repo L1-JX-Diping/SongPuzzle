@@ -15,9 +15,6 @@ public class LyricsController : MonoBehaviour
     public TextMeshProUGUI[] _textField; // 歌詞を表示するTextMeshProUGUIオブジェクト（3行分）
 
     /* private な変数たち */
-    private string _markDictFileName = "MarkColorDict.txt";
-    //private string _songTitle = "";
-    //private int _playerCount = 0;
     // 色弱用 GREEN, *(=Heart) 色とマークの対応
     private Dictionary<string, string> _markDict = new Dictionary<string, string>(); 
     private string _lyricsFileName = "Lyrics-BirthdaySong.txt"; // 入力ファイル名（Assetsフォルダ内）
@@ -201,7 +198,7 @@ public class LyricsController : MonoBehaviour
     void InitMarkDict()
     {
         // ファイルパスを取得
-        string filePath = Path.Combine(Application.dataPath, _markDictFileName);
+        string filePath = Path.Combine(Application.dataPath, FileNameManager.AvatarColorPairing);
 
         // ファイルの存在確認
         if (!File.Exists(filePath))

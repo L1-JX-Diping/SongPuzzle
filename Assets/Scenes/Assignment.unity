@@ -1372,7 +1372,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1295110068}
   - component: {fileID: 1295110069}
-  - component: {fileID: 1295110070}
   - component: {fileID: 1295110071}
   m_Layer: 5
   m_Name: Scripts
@@ -1414,18 +1413,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _textboxMic1Color: {fileID: 32922451}
   _textboxMic2Color: {fileID: 1715795250}
---- !u!114 &1295110070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1295110067}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47ff959c9eb918549846365d50e19c67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1295110071
 MonoBehaviour:
   m_ObjectHideFlags: 0

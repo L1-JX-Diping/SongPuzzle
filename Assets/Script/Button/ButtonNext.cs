@@ -10,8 +10,8 @@ public class ButtonNext : MonoBehaviour
     // ボタンに直接アタッチするバージョンのスクリプト
     // でも上手くいかなかった
     // HomeSceneManager で同じような関数使った場合うまくいった (Birthday Song のみ)
-    private string _gameInfoFileName = "GameInfo.txt"; // ファイル名
-    
+    private string _metaDataFile = FileNameManager.Meta;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +26,7 @@ public class ButtonNext : MonoBehaviour
     string GetSongTitle()
     {
         // ファイルパスの生成
-        string filePath = Path.Combine(Application.dataPath, _gameInfoFileName);
+        string filePath = Path.Combine(Application.dataPath, _metaDataFile);
 
         // ファイルが存在するか確認
         if (!File.Exists(filePath))
@@ -60,8 +60,8 @@ public class ButtonNext : MonoBehaviour
         if (songTitle == "Birthday Song")
         {
             // "Birthday Song" っであれば
-            // Mic-Color 対応をユーザに見せるシーン "AssignColor" を開く
-            SceneManager.LoadScene("AssignColor");
+            // Mic-Color 対応をユーザに見せるシーン "Assignment" を開く
+            SceneManager.LoadScene("Assignment");
         }
         else
         {

@@ -61,8 +61,8 @@ public class HomeSceneManager : MonoBehaviour
         if (songTitle == "Birthday Song")
         {
             // "Birthday Song" っであれば
-            // Mic-Color 対応をユーザに見せるシーン "AssignColor" を開く
-            SceneManager.LoadScene("AssignColor");
+            // Mic-Color 対応をユーザに見せるシーン "Assignment" を開く
+            SceneManager.LoadScene("Assignment");
         }
         else
         {

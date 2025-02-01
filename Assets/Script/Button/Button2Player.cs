@@ -27,8 +27,8 @@ public class Button2Player : MonoBehaviour
     {
         // Player count = 2
         AddSaveGameInfo();
-        // シーン AssignColor を開く
-        SceneManager.LoadScene("AssignColor");
+        // シーン Assignment を開く
+        SceneManager.LoadScene("Assignment");
     }
 
     void AddSaveGameInfo()

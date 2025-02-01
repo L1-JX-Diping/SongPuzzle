@@ -200,4 +200,17 @@ public class Calculation : MonoBehaviour
         }
     }
 
+    // アプリケーションを終了する処理
+    void OnApplicationQuit()
+    {
+        Debug.Log("アプリケーション終了処理を実行");
+
+#if UNITY_EDITOR
+        // エディタ上で実行を停止する（エディタ用）
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        // 実行ファイルの場合はアプリケーションを終了
+        Application.Quit();
+#endif
+    }
 }

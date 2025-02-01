@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Home.unity
     guid: 3a54c0a029b900f41b81c4635201c05c
   - enabled: 1
-    path: Assets/Scenes/AssignColor.unity
+    path: Assets/Scenes/Assignment.unity
     guid: a52875200e5387f4b8c5de25f4f08001
   - enabled: 1
     path: Assets/Scenes/DisplayLyrics.unity

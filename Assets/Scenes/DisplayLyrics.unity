@@ -1859,11 +1859,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1509152151}
   - component: {fileID: 1509152161}
-  - component: {fileID: 1509152162}
-  - component: {fileID: 1509152163}
   - component: {fileID: 1509152164}
   - component: {fileID: 1509152165}
-  - component: {fileID: 1509152166}
   m_Layer: 0
   m_Name: Scripts
   m_TagString: Untagged
@@ -1902,30 +1899,6 @@ MonoBehaviour:
   - {fileID: 134943816}
   - {fileID: 2078051862}
   - {fileID: 1918193277}
---- !u!114 &1509152162
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509152150}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e00683949f3f7246ae42a5221ed69c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1509152163
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509152150}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9dde43cb4458e324bb7f444f5bc0153e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1509152164
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1950,22 +1923,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0085442e061ab7b43bf8668f6e64ff31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1509152166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1509152150}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73df3854cf88fd54b8d1364148058f39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterImages:
-  - {fileID: 194854898}
-  - {fileID: 433635531}
-  - {fileID: 0}
 --- !u!1 &1560785695
 GameObject:
   m_ObjectHideFlags: 0
@@ -2203,9 +2160,8 @@ GameObject:
   - component: {fileID: 1781179413}
   - component: {fileID: 1781179412}
   - component: {fileID: 1781179411}
-  - component: {fileID: 1781179414}
   m_Layer: 5
-  m_Name: ButtonScore
+  m_Name: ViewScore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2228,7 +2184,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -302}
+  m_AnchoredPosition: {x: 0, y: -280}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1781179411
@@ -2313,18 +2269,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781179408}
   m_CullTransparentMesh: 1
---- !u!114 &1781179414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1781179408}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2883aa1b637fbd2489f2a13fef1fb16b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1918193275
 GameObject:
   m_ObjectHideFlags: 0
