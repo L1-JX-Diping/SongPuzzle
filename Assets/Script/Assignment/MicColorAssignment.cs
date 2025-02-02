@@ -5,7 +5,7 @@ using UnityEngine.UI; // UI 扱うので
 using UnityEngine.SceneManagement;
 using TMPro; // Scene の切り替えしたい場合に必要な宣言
 
-public class AssignmentManager : MonoBehaviour
+public class MicColorAssignment : MonoBehaviour
 {
     private List<string> _microphoneNameList = new List<string>(); // 検出されたマイク名
     private List<ColorInfo> _assignmentInfoList = new List<ColorInfo>(); // 割り当てたマイクと色の情報
@@ -176,7 +176,10 @@ public class AssignmentManager : MonoBehaviour
         {
             //string deviceName = "No_Mic";
             //_microphoneNameList.Add(deviceName);
-            Debug.LogError("No microphones detected.");
+            // if (playerCount == 2) {}
+            _microphoneNameList[0] = "Mic1(just singing)";
+            _microphoneNameList[1] = "Mic2(just singing)";
+            Debug.Log("No microphones detected.");
             return;
         }
 
@@ -244,7 +247,7 @@ public class AssignmentManager : MonoBehaviour
 
     private void SaveColorInfoToFile()
     {
-        string filePath = Path.Combine(Application.dataPath, FileNameManager.MicAssignment);
+        string filePath = Path.Combine(Application.dataPath, FileName.PlayerAssignment);
 
         using (StreamWriter writer = new StreamWriter(filePath))
         {

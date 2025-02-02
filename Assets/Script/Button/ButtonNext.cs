@@ -10,7 +10,7 @@ public class ButtonNext : MonoBehaviour
     // ボタンに直接アタッチするバージョンのスクリプト
     // でも上手くいかなかった
     // HomeSceneManager で同じような関数使った場合うまくいった (Birthday Song のみ)
-    private string _metaDataFile = FileNameManager.Meta;
+    private string _metaDataFile = FileName.MetaData;
 
     // Start is called before the first frame update
     void Start()

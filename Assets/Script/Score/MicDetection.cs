@@ -41,7 +41,7 @@ public class MicDetection : MonoBehaviour
         // マイクの初期設定
         InitializeMicrophones();
 
-        // ボタンが押されたらこれを実行
+        // ButtonClicked: Save information and Switch scene
         GameObject.Find("ViewScore").GetComponent<Button>().onClick.AddListener(ButtonClicked);
     }
 
@@ -135,7 +135,7 @@ public class MicDetection : MonoBehaviour
 
     private void ReadPartLog()
     {
-        string filePath = Path.Combine(Application.dataPath, FileNameManager.CorrectPart);
+        string filePath = Path.Combine(Application.dataPath, FileName.CorrectPart);
 
         if (!File.Exists(filePath))
         {
@@ -165,7 +165,7 @@ public class MicDetection : MonoBehaviour
     private void SaveMicDetectionLog()
     {
         // 音声検知時間をファイルに記録
-        string filePath = Path.Combine(Application.dataPath, FileNameManager.MicDitection);
+        string filePath = Path.Combine(Application.dataPath, FileName.MicDitection);
         using (StreamWriter writer = new StreamWriter(filePath))
         {
             writer.WriteLine($"# time, mic, volume");

@@ -16,7 +16,7 @@ public class LyricsController : MonoBehaviour
 
     /* private な変数たち */
     // 色弱用 GREEN, *(=Heart) 色とマークの対応
-    private Dictionary<string, string> _markDict = new Dictionary<string, string>(); 
+    private Dictionary<string, string> _markDict = new Dictionary<string, string>();
     private string _lyricsFileName = "Lyrics-BirthdaySong.txt"; // 入力ファイル名（Assetsフォルダ内）
     private List<LyricLineInfo> _lyricsList = new List<LyricLineInfo>(); // 歌詞情報(表示開始時刻＋表示する歌詞)を格納するリスト
     private float _loadingTime = 0.8f; // time lag
@@ -94,7 +94,7 @@ public class LyricsController : MonoBehaviour
         LoadLyricsFile(); // ファイルを読み込む
 
         ExportColorLog(); // 色分け情報を記録
-        ExportPartLog(); // パート分け情報を記録
+        ExportPartDivision(); // パート分け情報を記録
         UpdateLyricsDisplay(); // 初期表示を更新
     }
 
@@ -103,12 +103,18 @@ public class LyricsController : MonoBehaviour
         // 現在の時刻に基づいて歌詞を更新
         float currentTime = Time.timeSinceLevelLoad;
 
+        /* Display lyrics */
+        int maxIndex = LyricsList.Count - 1;
+        LyricLineInfo nextLine = LyricsList[_currentLyricIndex + 1];
         // 次の歌詞行に進むべきタイミングか確認
-        if (_currentLyricIndex < LyricsList.Count - 1 && currentTime >= LyricsList[_currentLyricIndex + 1].startTime - LoadingTime)
+        if (_currentLyricIndex < maxIndex && currentTime >= nextLine.startTime - LoadingTime)
         {
             _currentLyricIndex++;
             UpdateLyricsDisplay();
         }
+
+        /* Update Avatar Color */
+        // Avatar のパートのときに光るなど変化つける
     }
 
     void InitAvatarColor()
@@ -120,13 +126,13 @@ public class LyricsController : MonoBehaviour
             string markName = info.Value;
             //string mark = MarkToChar(markName);
             Debug.Log($"from _markDict: {colorName}, {markName}");
-            ReflectToAvatar(markName, color); // Heart, Color.green
+            ReflectColorToAvatar(markName, color); // Heart, Color.green
         }
         // Club 
-        ReflectToAvatar("Club", Color.gray);
+        ReflectColorToAvatar("Club", Color.gray);
     }
 
-    void ReflectToAvatar(string avatarName, Color assignedColor)
+    void ReflectColorToAvatar(string avatarName, Color assignedColor)
     {
         //objName = "Avatar1" 
         // Canvas内の objName オブジェクトを探す
@@ -198,7 +204,7 @@ public class LyricsController : MonoBehaviour
     void InitMarkDict()
     {
         // ファイルパスを取得
-        string filePath = Path.Combine(Application.dataPath, FileNameManager.AvatarColorPairing);
+        string filePath = Path.Combine(Application.dataPath, FileName.AvatarColorPairing);
 
         // ファイルの存在確認
         if (!File.Exists(filePath))
@@ -335,6 +341,7 @@ public class LyricsController : MonoBehaviour
                 text = lyrics,
                 partList = partInfoList
             });
+
             // 次の行の開始時刻計算
             _lineStartTime += _beat * barCount * Clock; // 6拍 (3拍子 * 2小節) * 0.5秒/拍 = 3秒
         }
@@ -356,9 +363,10 @@ public class LyricsController : MonoBehaviour
 
     private List<LyricPartInfo> SetPartInfoListForThisLine(List<int> randomNumList, List<int> ratioList, int barCount, string lyrics)
     {
-        List<LyricPartInfo> partInfoList = new List<LyricPartInfo>();
         /* LyricLineInfo の partList 情報生成*/
-        partInfoList = new List<LyricPartInfo>();
+        List<LyricPartInfo> partInfoList = new List<LyricPartInfo>();
+        //partInfoList = new List<LyricPartInfo>();
+
         // この行の歌詞を単語ごとに分割
         string[] wordList = lyrics.Split(' ');
         int index = 0;
@@ -385,6 +393,7 @@ public class LyricsController : MonoBehaviour
                 color = color,
                 mark = mark
             };
+
             partInfoList.Add(part);
             index++;
             _indexForNumList++;
@@ -402,7 +411,7 @@ public class LyricsController : MonoBehaviour
 
         while (resultList.Count < maxLength)
         {
-            int randomIndex = UnityEngine.Random.Range(0, candidateList.Count);
+            int randomIndex = Random.Range(0, candidateList.Count);
             int selectedNum = candidateList[randomIndex];
 
             // 連続回数をチェック
@@ -437,7 +446,7 @@ public class LyricsController : MonoBehaviour
     int ParseMetaLine(string metaLine, string key)
     {
         // 指定されたキーの値を正規表現で取得
-        var match = System.Text.RegularExpressions.Regex.Match(metaLine, $@"{key}\[(\d+)\]");
+        var match = Regex.Match(metaLine, $@"{key}\[(\d+)\]");
         if (match.Success && int.TryParse(match.Groups[1].Value, out int value))
         {
             return value;
@@ -473,9 +482,9 @@ public class LyricsController : MonoBehaviour
         Debug.Log($"Color log saved to {logPath}");
     }
 
-    void ExportPartLog()
+    void ExportPartDivision()
     {
-        string logPath = Path.Combine(Application.dataPath, "PartLog.txt");
+        string logPath = Path.Combine(Application.dataPath, FileName.CorrectPart);
         using (StreamWriter writer = new StreamWriter(logPath))
         {
             //writer.WriteLine("Part Log:");
@@ -501,7 +510,7 @@ public class LyricsController : MonoBehaviour
     }
 
     /// <summary>
-    /// GET color name from color (Type: Color)
+    /// color to color NAME 
     /// </summary>
     /// <param name="color"></param>
     /// <returns></returns>
@@ -512,11 +521,11 @@ public class LyricsController : MonoBehaviour
         if (color == Color.yellow) return "YELLOW";
         if (color == Color.blue) return "BLUE";
 
-        return "UNKNOWN";
+        return "ALL";
     }
 
     /// <summary>
-    /// GET color from color name (Type: string)
+    /// color name to COLOR 
     /// </summary>
     /// <param name="colorName"></param>
     /// <returns></returns>
@@ -527,10 +536,14 @@ public class LyricsController : MonoBehaviour
         if (colorName == "YELLOW") return Color.yellow;
         if (colorName == "BLUE") return Color.blue;
 
-        return Color.white;
+        return Color.white; // 全員で歌うパート
     }
 
-
+    /// <summary>
+    /// markName to MARK
+    /// </summary>
+    /// <param name="markName"></param>
+    /// <returns></returns>
     string MarkToChar(string markName)
     {
         if (markName == "Heart") return "♥";
@@ -540,23 +553,5 @@ public class LyricsController : MonoBehaviour
 
         return "*"; // 全員で歌う部分
     }
-
-    //string MarkToChar(string markName)
-    //{
-    //    if (markName == "Heart") return "*";
-    //    if (markName == "Spade") return "!";
-    //    if (markName == "Diamond") return "+";
-    //    if (markName == "Club") return "#";
-
-    //    string chorusMark = "";
-    //    int i = 0;
-    //    while (i < _playerCount)
-    //    {
-    //        chorusMark += "<";
-    //        i++;
-    //    }
-    //    return chorusMark; // 全員で歌う部分
-    //}
-
 
 }

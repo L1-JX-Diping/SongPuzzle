@@ -8,10 +8,6 @@ public class Calculation : MonoBehaviour
 {
     public TextMeshProUGUI _scoreDisplayText;
 
-    private string _micColorInfoFileName = "MicColorInfo.txt";
-    private string _partLogFileName = "PartLog.txt";
-    private string _micDetectionLogFileName = "MicDetectionLog.txt";
-
     private Dictionary<string, string> _micColorDict = new Dictionary<string, string>(); // マイクと色の対応
     private List<PartInfo> _partInfoList = new List<PartInfo>(); // 時刻と色・マイクの正解情報
     private List<Detection> _detectionList = new List<Detection>(); // 時刻ごとの検出情報
@@ -45,7 +41,7 @@ public class Calculation : MonoBehaviour
 
     void LoadMicColorInfo()
     {
-        string filePath = Path.Combine(Application.dataPath, _micColorInfoFileName);
+        string filePath = Path.Combine(Application.dataPath, FileName.PlayerAssignment);
 
         if (!File.Exists(filePath))
         {
@@ -71,7 +67,7 @@ public class Calculation : MonoBehaviour
 
     void LoadPartLog()
     {
-        string filePath = Path.Combine(Application.dataPath, _partLogFileName);
+        string filePath = Path.Combine(Application.dataPath, FileName.CorrectPart);
 
         if (!File.Exists(filePath))
         {
@@ -79,9 +75,9 @@ public class Calculation : MonoBehaviour
             return;
         }
 
-        string[] lines = File.ReadAllLines(filePath);
+        string[] lineList = File.ReadAllLines(filePath);
 
-        foreach (string line in lines)
+        foreach (string line in lineList)
         {
             string[] parts = line.Split(',');
             if (parts.Length == 2 && float.TryParse(parts[0].Trim(), out float time))
@@ -113,7 +109,7 @@ public class Calculation : MonoBehaviour
 
     void LoadMicDetectionLog()
     {
-        string filePath = Path.Combine(Application.dataPath, _micDetectionLogFileName);
+        string filePath = Path.Combine(Application.dataPath, FileName.MicDitection);
 
         if (!File.Exists(filePath))
         {

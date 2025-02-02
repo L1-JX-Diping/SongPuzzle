@@ -11,15 +11,11 @@ public class HomeSceneManager : MonoBehaviour
     public Dropdown _dropdownSongTitle;
     public Dropdown _dropdownPlayerCount;
     
-    /* private な変数 */
-    private string _songListFileName = "SongTitleList.txt"; // リストファイルの名前（Assetsフォルダ内）
-    private string _outputFileName = "GameInfo.txt"; // 記録ファイルのパス
-    //private string _songTitle = "Birthday Song";
-
     void Start()
     {
         // Set select song field 
         SetDropdown();
+        //Dropdown _dropdownSongTitle = GameObject.Find("Dropdown-SelectSong").GetComponent<Dropdown>();
 
         // ボタンが押されたらこれを実行
         GameObject.Find("ButtonNext").GetComponent<Button>().onClick.AddListener(ButtonClicked);
@@ -28,7 +24,7 @@ public class HomeSceneManager : MonoBehaviour
     private void SetDropdown()
     {
         // ファイルパスを取得
-        string filePath = Path.Combine(Application.dataPath, _songListFileName);
+        string filePath = Path.Combine(Application.dataPath, FileName.SongTitleList);
 
         // ファイルを読み込み、Dropdownに追加
         if (File.Exists(filePath))
@@ -134,7 +130,7 @@ public class HomeSceneManager : MonoBehaviour
     void SaveGameInfo()
     {
         // 記録ファイルのパスを取得
-        string filePath = Path.Combine(Application.dataPath, _outputFileName);
+        string filePath = Path.Combine(Application.dataPath, FileName.MetaData);
         string songTitle = GetSongTitle();
         string playerCount = GetPlayerNum();
 
