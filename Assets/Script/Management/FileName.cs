@@ -7,9 +7,9 @@ public class FileName : MonoBehaviour
 {
     // 別のスクリプトからアクセスできるように static にする
     private static string _metaData = "GameInfo.txt";
-    private static string _playerAssignment = "PlayerAssignment.txt";
-    private static string _avatarColorPair = "MarkColorDict.txt";
-    private static string _correctPart = "PartLog.txt";
+    private static string _playerRole = "PlayerRole.txt";
+    //private static string _avatarColorPair = "MarkColorDict.txt";
+    private static string _correctPart = "CorrectPart.txt";
     private static string _micDitection = "MicDetectionLog.txt";
     private static string _songTitleList = "SongTitleList.txt";
 
@@ -22,16 +22,16 @@ public class FileName : MonoBehaviour
     public static string MetaData { get => _metaData; set => _metaData = value; }
 
     /// <summary>
-    /// [format # ColorName, MicName, AvatarName]
-    /// GREEN, Mic-device1, Heart
+    /// [format # playerName, ColorName, AvatarName, MicName]
+    /// Player1, GREEN, Heart, Mic-device1
     /// </summary>
-    public static string PlayerAssignment { get => _playerAssignment; set => _playerAssignment = value; }
+    public static string PlayerRole { get => _playerRole; set => _playerRole = value; }
 
     /// <summary>
     /// [format # ColorName, AvatarName]
     /// GREEN, Heart
     /// </summary>
-    public static string AvatarColorPairing { get => _avatarColorPair; set => _avatarColorPair = value; }
+    //public static string AvatarColorPairing { get => _avatarColorPair; set => _avatarColorPair = value; }
 
     /// <summary>
     /// [format # Time, ColorName]

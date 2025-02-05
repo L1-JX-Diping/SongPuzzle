@@ -7,8 +7,8 @@ public class SceneSwitcherGameDisp : MonoBehaviour
     void Start()
     {
         // DisplayLyrics シーンにあるボタンの操作
-        GameObject.Find("ButtonHome").GetComponent<Button>().onClick.AddListener(ClickButtonEndGame);
-        GameObject.Find("ButtonScore").GetComponent<Button>().onClick.AddListener(ClickButtonViewScore);
+        GameObject.Find("Home").GetComponent<Button>().onClick.AddListener(ClickButtonEndGame);
+        GameObject.Find("ViewScore").GetComponent<Button>().onClick.AddListener(ClickButtonViewScore);
     }
     void ClickButtonEndGame()
     {

@@ -7,44 +7,72 @@ using TMPro; // Scene の切り替えしたい場合に必要な宣言
 
 public class Assignment : MonoBehaviour
 {
-    private List<string> _microphoneNameList = new List<string>(); // 検出されたマイク名
-    private List<PlayerAssignment> _assignmentInfoList = new List<PlayerAssignment>(); // 割り当てたマイクと色の情報
+    private List<string> _micList = new List<string>(); // 検出されたマイク名
+    private List<Player> _playerRoleList = new List<Player>(); // 割り当てたマイクと色の情報
     private Dictionary<string, string> _avatarColorDict = new Dictionary<string, string>();
-    private List<string> _colorNameList = new List<string> { "GREEN", "RED", "YELLOW" }; // 使用する 3 色
-    private List<string> _avatarList = new List<string> { "Heart", "Spade", "Diamond" }; // Heart, Spade, Diamond, Club の順で固定
-
-    //// インスペクターで手動で割り当てる場合に使用
-    //public Text _textboxMic1Color;
-    //public Text _textboxMic2Color;
+    // 候補となるアバター(今は順番に割り当て)
+    // random 割り当てしなきゃ
+    private List<string> _avatarList = new List<string> { "Heart", "Spade", "Diamond", "Club" }; // Heart, Spade, Diamond, Club の順で固定
+    // to access game data
+    private string _songTitle = "";
+    private int _playerCount = 0;
+    private List<string> _playerList = new List<string>();
 
     // Home シーンで x = 2 人で遊ぶを選んだら GameInfo.txt にそれが出力される
     // ここでは GameInfo.txt 読み込んで x 個のマイクを検出し、色を割り当てる
 
     [System.Serializable]
-    public class PlayerAssignment
+    public class Player
     {
-        public string colorName; // 割り当てた色
-        public string microphone; // マイク名
-        public string mark; // mark 
+        public string name;
+        public Color color; // 割り当てた色
+        public string micDevice; // マイク名
+        public string avatar; // mark 
     }
 
     void Start()
     {
+        // Get and Set game data registered in previous page from file
+        SetGameData();
+
         // color assignment 
-        AssignColorsToMicrophones();
+        AssignRoleToPlayers();
 
         // 画面にマイクと色の対応を表示する
-        WriteIntoTextbox();
+        WriteIntoScreen();
 
         // パートの色とマイクの対応を保存
-        SavePlayerAssignmentToFile();
-        // Avatar(mark) と Color(string) の対応を保存
-        SaveAvatarDictToFile();
+        SavePlayerRoleToFile();
 
-        // ボタンが押されたらこれを実行 Save file / Switch Scene
+        // Avatar(mark) と Color(string) の対応を保存
+        //SaveAvatarDictToFile();
+
+        // ボタンが押されたらこれを実行 Switch Scene
         //GameObject.Find("ButtonStart").GetComponent<Button>().onClick.AddListener(ButtonClicked);
     }
 
+    /// <summary>
+    /// Set game data to use in this class
+    /// </summary>
+    private void SetGameData()
+    {
+        // set data to GameData class
+        GameData.SetAllData();
+
+        // get from the data set to GameData class
+        _songTitle = GameData.SongTitle;
+        _playerCount = GameData.PlayerCount;
+        _playerList = GameData.PlayerList;
+
+        // for debug
+        Debug.Log($"### SongTitle, PlayerCount get from GameData.cs:\n {_songTitle}, {_playerCount} \n");
+        Debug.Log($"### PlayerList created: \n");
+        foreach (string playerName in _playerList) Debug.Log($"{playerName} "); 
+    }
+
+    /// <summary>
+    /// If button clicked, switch scene
+    /// </summary>
     void ButtonClicked()
     {
         // ゲーム画面へ GO
@@ -57,70 +85,29 @@ public class Assignment : MonoBehaviour
         SceneManager.LoadScene("DisplayLyrics");
     }
 
-    private void WriteIntoTextbox()
+    private void WriteIntoScreen()
     {
-        // Get game meta data
-        string songTitle = GameData.GetSongTitle();
-        int playerCount = GameData.GetPlayerCount();
-        // for debug
-        Debug.Log($"### PlayerCount get from GameData.cs: {playerCount}");
-
-        /* mic(assignment) information for real players */
-        for (int index = 0; index < playerCount; index++)
+        /* display mic(assignment) information */
+        for (int index = 0; index < _playerCount; index++)
         {
             DisplayAssignment(index);
         }
-
-        /* mic(assignment) information for robot */
-        // 名前で UI オブジェクトを探す
-        Text mic3ColorField = GameObject.Find("Color3").GetComponent<Text>();
-        Text mic3NameField = GameObject.Find("MicName3").GetComponent<Text>();
-        
-        if (mic3ColorField != null)
-        {
-            string colorName = "";
-            string assignedColor0 = _assignmentInfoList[0].colorName;
-            string assignedColor1 = _assignmentInfoList[1].colorName;
-
-            // _colorNameListから未使用の色を検索
-            foreach (string name in _colorNameList)
-            {
-                if (name != assignedColor1 && name != assignedColor0)
-                {
-                    colorName = name; // 未使用の色を設定
-                    break; // 最初に見つけた未使用の色でループを終了
-                }
-            }
-            Color color = Common.NameToColor(colorName);
-            mic3ColorField.text = colorName; // Color-Mic3 にパート色表示
-            mic3ColorField.color = color;
-            ReflectToAvatar("Avatar3", color);
-            //_markColorDict
-            if (!_avatarColorDict.ContainsKey(colorName)) _avatarColorDict[colorName] = _avatarList[2];
-        }
-        else
-        {
-            Debug.LogError("Textbox Color-Mic1 is not assigned.");
-        }
-        if (mic3NameField != null)
-        {
-            mic3NameField.text = "Robot Part"; // Name-Mic3 は機械が担当, 自動で満点換算
-        }
-        else
-        {
-            Debug.LogError("Textbox Name-Mic1 is not assigned.");
-        }
-
     }
 
+    /// <summary>
+    /// Display to screen (index: players' index)
+    /// </summary>
+    /// <param name="index"></param>
     private void DisplayAssignment(int index)
     {
-        int playerNo = index + 1; // playerNo: from 1, index: from 0
-        string playerName = "Robot"; // Player1, Player2... or Robot
         string objName = "";
         string avatarName = "";
         Text micColorField;
         Text micNameField;
+
+        // get current player name
+        string playerName = _playerList[index]; // Player1, Player2... or Robot
+        int playerNo = index + 1; // playerNo: from 1, index: from 0
 
         // Set text field to display assignment information
         objName = "Color" + playerNo.ToString();
@@ -134,12 +121,12 @@ public class Assignment : MonoBehaviour
         if (micColorField != null && micNameField != null)
         {
             // Get and Set assignment information for this player
-            PlayerAssignment player = _assignmentInfoList[index];
-            string colorName = player.colorName;
-            Color color = Common.NameToColor(colorName);
+            Player player = _playerRoleList[index];
+            Color color = player.color;
+            string colorName = Common.ToColorName(color);
 
             // Display mic DEVICE name
-            micNameField.text = player.microphone;
+            micNameField.text = playerName + ": \n [mic]: " + player.micDevice;
 
             // Display assigned COLOR name
             micColorField.text = colorName; // display text (color name)
@@ -155,106 +142,111 @@ public class Assignment : MonoBehaviour
         }
     }
 
-    private void AssignColorsToMicrophones()
+    /// <summary>
+    /// Set Players' role (MIC to use, AVATAR, COLOR displayed on the game screen)
+    /// </summary>
+    private void AssignRoleToPlayers()
     {
-        // マイクデバイスを取得
-        foreach (string deviceName in Microphone.devices)
-        {
-            // パソコン本体のマイクは含めない
-            // USB で接続されたマイクのみリストに追加したい
-            if (deviceName == "マイク配列 (Realtek(R) Audio)")
-            {
-                continue;
-            }
+        // detect mic devices connected to PC and set them to _micList 
+        SetMicList();
 
-            _microphoneNameList.Add(deviceName);
+        /* Random Color Assignment */
+        // 候補となる色の中から mic(player) の数だけ色を選ぶ
+        List<Color> colors = RandomSelectColor(Common.AvailableColors, _playerCount);
+
+        // For debug
+        Debug.Log($"Selected colors:\n");
+        foreach (Color color in colors)
+        {
+            Debug.Log($"{Common.ToColorName(color)}");
         }
 
-        if (_microphoneNameList.Count == 0)
+        // Set player role
+        for (int i = 0; i < _playerCount; i++)
         {
-            //string deviceName = "No_Mic";
-            //_microphoneNameList.Add(deviceName);
+            // 構造体に追加
+            _playerRoleList.Add(new Player
+            {
+                name = _playerList[i],
+                micDevice = _micList[i],
+                color = colors[i],
+                avatar = _avatarList[i]
+            });
 
-            // if (playerCount == 2) {}
-            _microphoneNameList[0] = "Mic1(just singing)";
-            _microphoneNameList[1] = "Mic2(just singing)";
-            Debug.Log("No microphones detected.");
+            // for debug
+            Debug.Log($"Assigned color {colors[i]} to {_micList[i]}");
+        }
+    }
+
+    /// <summary>
+    /// Set _micList by detecting mic devices
+    /// </summary>
+    private void SetMicList()
+    {
+        // the CASE that NO mic detected (without default mic of PC)
+        if (Microphone.devices.Length == 1)
+        {
+            // おそらくパソコン本体のマイク
+            Debug.Log($"No USB mic detected.\n{Microphone.devices[0]} is detected.");
+
+            for (int i = 0; i < _playerCount; i++)
+            {
+                string micName = "Mic" + (i + 1).ToString() + "(Just singing)";
+                _micList.Add(micName);
+            }
+
+            // for debug
+            Debug.Log($"No microphones detected.\n{_micList.Count} content of _micList :\n");
+            foreach (string name in _micList) Debug.Log($"{name}");
+
             return;
         }
 
-        Debug.Log($"Detected {_microphoneNameList.Count} microphones.");
-
-        // 色をランダムに割り当て
-
-        // 候補となる数字 index of color
-        List<int> numberList = new List<int> { 0, 1, 2 };
-
-        // 結果を格納するリスト
-        List<int> indexList = SelectTwoRandomIndexes(numberList);
-
-        // 結果をログ出力
-        Debug.Log($"Selected indexes: {indexList[0]}, {indexList[1]}");
-
-        // 色を割り当て
-        for (int i = 0; i < _microphoneNameList.Count; i++)
-        {
-            string assignedColor = _colorNameList[indexList[i]]; // 色を順番に割り当て
-
-            // 構造体に追加
-            _assignmentInfoList.Add(new PlayerAssignment
-            {
-                microphone = _microphoneNameList[i],
-                colorName = assignedColor,
-                mark = _avatarList[i]
-            });
-
-            Debug.Log($"Assigned color {assignedColor} to {_microphoneNameList[i]}");
-        }
+        // the CASE that mic detected
+        IfMicDetected();
     }
 
-    List<int> SelectTwoRandomIndexes(List<int> numberList)
+    /// <summary>
+    /// If there are more than one of the mics connected to APP
+    /// </summary>
+    private void IfMicDetected()
     {
-        List<int> result = new List<int>();
-
-        // シャッフルして上位2つを取得
-        for (int i = numberList.Count - 1; i > 0; i--)
+        // Get mic devices that connected to PC with USB
+        foreach (string deviceName in Microphone.devices)
         {
-            int randomIndex = Random.Range(0, i + 1);
-            (numberList[i], numberList[randomIndex]) = (numberList[randomIndex], numberList[i]);
+            // PC 本体のマイクは含めない 
+            if (deviceName == "マイク配列 (Realtek(R) Audio)") continue;
+
+            // USB で接続されたマイクのみ追加
+            _micList.Add(deviceName);
         }
+        Debug.Log($"Detected {_micList.Count} microphones.");
 
-        result.Add(numberList[0]);
-        result.Add(numberList[1]);
-
-        return result;
+        // If (the number of MIC devices < the number of PLAYERs registered in the previous page)
+        // Set "Robot part" for the number of the distinction between these two
+        // e.g. playerCount = 3, 2 mic detected --> There is one robot part exist
+        while (_micList.Count < _playerCount)
+        {
+            string micName = "Mic" + (_micList.Count + 1).ToString() + "(Robot part)";
+            _micList.Add(micName);
+        }
+        Debug.Log($"There are {_playerCount} players and {_micList.Count} mics are assigned to each player.");
     }
-    
-    private void SaveAvatarDictToFile()
+
+
+    /// <summary>
+    /// Save information to file
+    /// </summary>
+    private void SavePlayerRoleToFile()
     {
-        string filePath = Path.Combine(Application.dataPath, FileName.AvatarColorPairing);
+        string filePath = Path.Combine(Application.dataPath, FileName.PlayerRole);
 
         using (StreamWriter writer = new StreamWriter(filePath))
         {
-            foreach (var avatar in _avatarColorDict)
+            foreach (Player player in _playerRoleList)
             {
-                writer.WriteLine($"{avatar.Key}, {avatar.Value}");
-            }
-        }
-
-        Debug.Log($"Color information saved to {filePath}");
-    }
-
-    private void SavePlayerAssignmentToFile()
-    {
-        string filePath = Path.Combine(Application.dataPath, FileName.PlayerAssignment);
-
-        using (StreamWriter writer = new StreamWriter(filePath))
-        {
-            foreach (PlayerAssignment colorInfo in _assignmentInfoList)
-            {
-                writer.WriteLine($"{colorInfo.colorName}, {colorInfo.microphone}, {colorInfo.mark}");
-                // RED, マイク (Logi C615 HD WebCam)
-                // みたいな形式で保存される
+                // Player1, Red, Heart, Mic1 
+                writer.WriteLine($"{player.name}, {Common.ToColorName(player.color)}, {player.avatar}, {player.micDevice}");
             }
         }
 
@@ -294,5 +286,101 @@ public class Assignment : MonoBehaviour
             Debug.LogError($"{avatarName} object not found in the scene.");
         }
     }
+
+    /// <summary>
+    /// Selecting X colors from the input List of colors (x = count, the 2nd parameter)
+    /// </summary>
+    /// <param name="colorsForSelect"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
+    private List<Color> RandomSelectColor(List<Color> availableColors, int count)
+    {
+        // to collect Selected Colors 結果を格納するリスト
+        List<Color> result = new List<Color>();
+
+        // 選択する色数 count が候補色の要素数 availableColors.Count を超えないようにする
+        count = Mathf.Min(count, availableColors.Count);
+
+        // Select X colors (X = count)
+        for (int i = 0; i < count; i++)
+        {
+            // while 文使う場合の終了条件
+            //if (selectedColors.Count == count) break; // count 個選択できたら任務完了
+
+            // ランダムに 1 つ選択
+            int index = Random.Range(0, availableColors.Count);
+            result.Add(availableColors[index]);
+
+            // 選択済みの色を候補色リストから削除（重複を避ける）
+            availableColors.RemoveAt(index);
+        }
+
+        return result;
+    }
+
+
+    /// <summary>
+    /// Robot part
+    /// </summary>
+    private void DisplayRobotPartAssignment()
+    {
+        // 名前で UI オブジェクトを探す
+        Text mic3ColorField = GameObject.Find("Color3").GetComponent<Text>();
+        Text mic3NameField = GameObject.Find("MicName3").GetComponent<Text>();
+
+        if (mic3ColorField != null)
+        {
+            Color targetColor = Color.white;
+
+            // _colorNameListから未使用の色を検索
+            foreach (Color color in Common.AvailableColors)
+            {
+                if (color != _playerRoleList[0].color && color != _playerRoleList[1].color)
+                {
+                    targetColor = color; // 未使用の色を設定
+                    break; // 最初に見つけた未使用の色でループを終了
+                }
+            }
+            string colorName = Common.ToColorName(targetColor);
+            // text 
+            mic3ColorField.text = colorName; // パート色表示
+            // text color
+            mic3ColorField.color = targetColor;
+            // avatar name (mark)
+            ReflectToAvatar("Avatar3", targetColor);
+            //_markColorDict
+            if (!_avatarColorDict.ContainsKey(colorName)) _avatarColorDict[colorName] = _avatarList[2];
+        }
+        else
+        {
+            Debug.LogError($"Text field {mic3ColorField} is not assigned.");
+        }
+        if (mic3NameField != null)
+        {
+            mic3NameField.text = "Robot Part"; // 機械の担当パート, 満点扱い
+        }
+        else
+        {
+            Debug.LogError($"Text field {mic3NameField} is not assigned.");
+        }
+    }
+
+    ///// <summary>
+    ///// 要らなくなるかも
+    ///// </summary>
+    //private void SaveAvatarDictToFile()
+    //{
+    //    string filePath = Path.Combine(Application.dataPath, FileName.AvatarColorPairing);
+
+    //    using (StreamWriter writer = new StreamWriter(filePath))
+    //    {
+    //        foreach (var avatar in _avatarColorDict)
+    //        {
+    //            writer.WriteLine($"{avatar.Key}, {avatar.Value}");
+    //        }
+    //    }
+
+    //    Debug.Log($"Color information saved to {filePath}");
+    //}
 
 }

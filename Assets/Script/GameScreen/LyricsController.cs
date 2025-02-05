@@ -7,6 +7,7 @@ using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 using ColorUtility = UnityEngine.ColorUtility;
 using UnityEngine.UI;
+using UnityEditor;
 
 
 public class LyricsController : MonoBehaviour
@@ -16,82 +17,62 @@ public class LyricsController : MonoBehaviour
 
     /* private な変数たち */
     // 色弱用 GREEN, *(=Heart) 色とマークの対応
-    private Dictionary<string, string> _markDict = new Dictionary<string, string>();
-    private string _lyricsFileName = "Lyrics-BirthdaySong.txt"; // 入力ファイル名（Assetsフォルダ内）
-    private List<LyricLineInfo> _lyricsList = new List<LyricLineInfo>(); // 歌詞情報(表示開始時刻＋表示する歌詞)を格納するリスト
+    private Dictionary<Color, string> _avatarDict = new Dictionary<Color, string>();
+    private string _lyricsFileName = ""; // 入力ファイル名（Assetsフォルダ内）
+    private List<Line> _lyricsList = new List<Line>(); // 歌詞情報(表示開始時刻＋表示する歌詞)を格納するリスト
     private float _loadingTime = 0.8f; // time lag
     private int _currentLyricIndex = 0; // 現在の歌詞インデックス
     private float _clock = 3f; // Second per Beat
     private float _beat = 4; // 何拍子か？ Birthday song は 3 拍子
     private string _eofText = "GAME END.";
     private float _lineStartTime = 0f; // intro 前奏終了時刻 = 歌詞表示(のスクロール用時刻計算)開始時刻
-    // 使用する3色
-    private Color[] _colorList = 
-    { 
-        Color.red, 
-        Color.green, 
-        Color.yellow 
-    }; 
     private int _indexForNumList = 0;
+    private List<Color> _colorList = new List<Color>();
 
     /// <summary>
     /// Which song do you want to play? Set/Get the FILE NAME
     /// </summary>
-    public string LyricsFileName
-    {
-        get => _lyricsFileName;
-        set => _lyricsFileName = value;
-    }
+    public string LyricsFileName { get => _lyricsFileName; set => _lyricsFileName = value; }
 
     /// <summary>
     /// LyricsList has the information of each line's StartTime/Text/
     /// </summary>
-    public List<LyricLineInfo> LyricsList
-    {
-        get => _lyricsList;
-        set => _lyricsList = value;
-    }
+    public List<Line> LyricsList { get => _lyricsList; set => _lyricsList = value; }
 
     /// <summary>
     /// Get/Set Lag(LoadingTime); To adjust the song accompaniment with the lyrics display scrolling
     /// </summary>
-    public float LoadingTime
-    {
-        get => _loadingTime;
-        set => _loadingTime = value;
-    }
+    public float LoadingTime { get => _loadingTime; set => _loadingTime = value; }
 
     /// <summary>
     /// Clock: second per beat
     /// </summary>
-    public float Clock
-    {
-        get => _clock;
-        set => _clock = value;
-    }
+    public float Clock { get => _clock; set => _clock = value; }
 
     [System.Serializable]
-    public class LyricPartInfo
+    public class Part
     {
         public float timing; // タイミング
         public string word; // 単語
         public Color color; // 割り当てられた色
-        public string mark; // 色弱用: 割り当てられた色に対応するマーク
+        public string avatar; // 色弱用: 割り当てられた色に対応するマーク
     }
 
     [System.Serializable]
-    public class LyricLineInfo
+    public class Line
     {
         public float startTime; // 表示時刻（秒単位）
         public string text; // 歌詞内容
-        public List<LyricPartInfo> partList = new List<LyricPartInfo>(); // 単語ごとの色情報
+        public List<Part> partList = new List<Part>(); // 単語ごとの色情報
     }
 
     void Start()
     {
-        InitMarkDict(); // パートと Mark の対応作成
+        SetLyricsFileName();
+        SetColorList(); // color - avatar
+
         InitAvatarColor(); // 画面上にアバターの色を反映する
-        LoadLyricsFile(); // ファイルを読み込む
+        LoadLyricsFile(); // 歌詞ファイルを読み込む
 
         ExportColorLog(); // 色分け情報を記録
         ExportPartDivision(); // パート分け情報を記録
@@ -105,7 +86,7 @@ public class LyricsController : MonoBehaviour
 
         /* Display lyrics */
         int maxIndex = LyricsList.Count - 1;
-        LyricLineInfo nextLine = LyricsList[_currentLyricIndex + 1];
+        Line nextLine = LyricsList[_currentLyricIndex + 1];
         // 次の歌詞行に進むべきタイミングか確認
         if (_currentLyricIndex < maxIndex && currentTime >= nextLine.startTime - LoadingTime)
         {
@@ -116,18 +97,64 @@ public class LyricsController : MonoBehaviour
         /* Update Avatar Color */
         // Avatar のパートのときに光るなど変化つける
     }
+    
+    /// <summary>
+    /// Set game data to use in this class
+    /// </summary>
+    private void SetLyricsFileName()
+    {
+        // set data to GameData class
+        GameData.SetAllData();
+
+        // get from the data set to GameData class
+        string songTitle = GameData.SongTitle;
+        _lyricsFileName = "Lyrics-" + songTitle + ".txt";
+    }
+
+    /// <summary>
+    /// Get assigned colors and Set into _colorList
+    /// </summary>
+    private void SetColorList()
+    {
+        string[] lineList = Common.GetFileContents(FileName.PlayerRole);
+
+        // format: PlayerName, ColorName, Avatar(Mark), Mic
+        foreach (string line in lineList)
+        {
+            // separate by ","
+            string[] playerRole = line.Split(',');
+
+            /* set COLOR List */
+            string colorName = playerRole[1].Trim(); // 2 列目: color name like "RED"
+            Color color = Common.ToColor(colorName);
+            _colorList.Add(color);
+
+            /* set AVATAR dictionary */
+            string avatar = playerRole[2].Trim(); // 3 行目: avatar like "Spade"
+            // Add to Dictionary
+            if (!_avatarDict.ContainsKey(color))
+            {
+                _avatarDict[color] = avatar;
+            }
+            else
+            {
+                Debug.LogWarning($"Duplicate color entry found: {colorName}, ignoring the second entry.");
+            }
+        }
+        // for debug
+        Debug.Log($"Set _markDict with {_avatarDict.Count} entries, _colorList with {_colorList.Count} entries.");
+    }
 
     void InitAvatarColor()
     {
-        foreach (var info in _markDict)
+        foreach (var info in _avatarDict)
         {
-            string colorName = info.Key;
-            Color color = NameToColor(colorName);
-            string markName = info.Value;
-            //string mark = MarkToChar(markName);
-            Debug.Log($"from _markDict: {colorName}, {markName}");
-            ReflectColorToAvatar(markName, color); // Heart, Color.green
+            Color color = info.Key;
+            string avatar = info.Value;
+            Debug.Log($"from _markDict: {Common.ToColorName(color)}, {avatar}");
+            ReflectColorToAvatar(avatar, color); // Heart, Color.green
         }
+        // did not be used
         // Club 
         ReflectColorToAvatar("Club", Color.gray);
     }
@@ -175,10 +202,10 @@ public class LyricsController : MonoBehaviour
             {
                 // テキストを色付きで構築
                 string coloredText = "";
-                foreach (LyricPartInfo part in LyricsList[lyricIndex].partList)
+                foreach (Part part in LyricsList[lyricIndex].partList)
                 {
                     string hexColor = ColorUtility.ToHtmlStringRGB(part.color);
-                    coloredText += $"<color=#{hexColor}>{part.mark}{part.word}</color> ";
+                    coloredText += $"<color=#{hexColor}>{part.avatar}{part.word}</color> ";
                 }
 
                 _textField[i].text = coloredText.Trim();
@@ -201,49 +228,6 @@ public class LyricsController : MonoBehaviour
         }
     }
 
-    void InitMarkDict()
-    {
-        // ファイルパスを取得
-        string filePath = Path.Combine(Application.dataPath, FileName.AvatarColorPairing);
-
-        // ファイルの存在確認
-        if (!File.Exists(filePath))
-        {
-            Debug.LogError($"File not found: {filePath}");
-            return;
-        }
-
-        // ファイルを行ごとに読み込む
-        string[] lineList = File.ReadAllLines(filePath);
-
-        foreach (string line in lineList)
-        {
-            // カンマで分割
-            string[] pairColorMark = line.Split(',');
-
-            if (pairColorMark.Length == 2)
-            {
-                string colorName = pairColorMark[0].Trim();  // 1列目: colorName (例: GREEN)
-                string markName = pairColorMark[1].Trim();   // 3列目: markName (例: Spade)
-
-                // Dictionaryに追加
-                if (!_markDict.ContainsKey(colorName))
-                {
-                    _markDict[colorName] = markName;
-                }
-                else
-                {
-                    Debug.LogWarning($"Duplicate color entry found: {colorName}, ignoring the second entry.");
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"Invalid line format: {line}");
-            }
-        }
-
-        Debug.Log($"Initialized _markDict with {_markDict.Count} entries.");
-    }
 
     void LoadLyricsFile()
     {
@@ -266,7 +250,7 @@ public class LyricsController : MonoBehaviour
     private void DebugToConsole()
     {
         Debug.Log("_lyricsList: \n");
-        foreach (LyricLineInfo line in LyricsList)
+        foreach (Line line in LyricsList)
         {
             Debug.Log(line.startTime + ", " + line.text);
         }
@@ -278,7 +262,7 @@ public class LyricsController : MonoBehaviour
         List<int> randomNumList = CreateRandomNumList(3);
 
         // 前奏 intro 部分用
-        LyricsList.Add(new LyricLineInfo { startTime = 0.0f, text = "" });
+        LyricsList.Add(new Line { startTime = 0.0f, text = "" });
 
         // meta info part (1行目) の処理
         // bpm と intro を取得
@@ -332,10 +316,10 @@ public class LyricsController : MonoBehaviour
             string lyrics = match.Groups[3].Value.Trim();
 
             // この歌詞行について part 情報をセット
-            List<LyricPartInfo> partInfoList = SetPartInfoListForThisLine(randomNumList, ratioList, barCount, lyrics);
+            List<Part> partInfoList = SetPartInfoListForThisLine(randomNumList, ratioList, barCount, lyrics);
 
             // lyricsList に追加
-            LyricsList.Add(new LyricLineInfo
+            LyricsList.Add(new Line
             {
                 startTime = _lineStartTime,
                 text = lyrics,
@@ -348,12 +332,12 @@ public class LyricsController : MonoBehaviour
 
         // 終了メッセージを追加
         //float endTime = lyricsStartTime + lines.Length * clock;
-        LyricsList.Add(new LyricLineInfo
+        LyricsList.Add(new Line
         {
             startTime = _lineStartTime,
             text = _eofText
         });
-        LyricsList.Add(new LyricLineInfo
+        LyricsList.Add(new Line
         {
             startTime = _lineStartTime + 2f,
             text = ""
@@ -361,10 +345,10 @@ public class LyricsController : MonoBehaviour
 
     }
 
-    private List<LyricPartInfo> SetPartInfoListForThisLine(List<int> randomNumList, List<int> ratioList, int barCount, string lyrics)
+    private List<Part> SetPartInfoListForThisLine(List<int> randomNumList, List<int> ratioList, int barCount, string lyrics)
     {
         /* LyricLineInfo の partList 情報生成*/
-        List<LyricPartInfo> partInfoList = new List<LyricPartInfo>();
+        List<Part> partInfoList = new List<Part>();
         //partInfoList = new List<LyricPartInfo>();
 
         // この行の歌詞を単語ごとに分割
@@ -380,18 +364,17 @@ public class LyricsController : MonoBehaviour
             // generate part List
             string word = wordList[index];
             Color color = _colorList[randomNumList[_indexForNumList]];
-            string colorName = ColorToName(color);
-            string markName = _markDict[colorName];
-            string mark = MarkToChar(markName); // markName to mark (例: ♠)
-            Debug.Log($"add _markDict: {colorName}, {mark}");
+            string markName = _avatarDict[color];
+            string mark = Common.AvatarToLetter(markName); // markName to mark (例: ♠)
+            Debug.Log($"add _markDict: {Common.ToColorName(color)}, {mark}");
 
             // part 情報格納
-            LyricPartInfo part = new LyricPartInfo
+            Part part = new Part
             {
                 timing = partStartTime,
                 word = word,
                 color = color,
-                mark = mark
+                avatar = mark
             };
 
             partInfoList.Add(part);
@@ -458,11 +441,11 @@ public class LyricsController : MonoBehaviour
 
     void ExportColorLog()
     {
-        string logPath = Path.Combine(Application.dataPath, "LyricsColorLog.txt");
+        string logPath = Path.Combine(Application.dataPath, "ForHumanCheck.txt");
         using (StreamWriter writer = new StreamWriter(logPath))
         {
             writer.WriteLine("Lyrics Color Log:");
-            foreach (LyricLineInfo thisLine in LyricsList)
+            foreach (Line thisLine in LyricsList)
             {
                 if (thisLine.text == "" || thisLine.text == _eofText)
                 {
@@ -472,10 +455,10 @@ public class LyricsController : MonoBehaviour
                 // XX.XX という形式で開始時刻をファイルに書き込み
                 writer.WriteLine($"[{thisLine.startTime:00.00}]");
 
-                foreach (LyricPartInfo part in thisLine.partList)
+                foreach (Part part in thisLine.partList)
                 {
                     // パートの歌詞と色を出力
-                    writer.WriteLine($"  \"{part.word}\" - {part.color}");
+                    writer.WriteLine($"  \"{part.timing}: {part.word}\" - {Common.AvatarToLetter(part.avatar)} {Common.ToColorName(part.color)}, {part.color}");
                 }
             }
         }
@@ -488,7 +471,7 @@ public class LyricsController : MonoBehaviour
         using (StreamWriter writer = new StreamWriter(logPath))
         {
             //writer.WriteLine("Part Log:");
-            foreach (LyricLineInfo thisLine in LyricsList)
+            foreach (Line thisLine in LyricsList)
             {
                 if (thisLine.text == "" || thisLine.text == _eofText)
                 {
@@ -498,60 +481,15 @@ public class LyricsController : MonoBehaviour
                 // XX.XX という形式で開始時刻をファイルに書き込み
                 //writer.WriteLine($"[{thisLine.startTime:00.00}] {thisLine.text}");
 
-                foreach (LyricPartInfo part in thisLine.partList)
+                foreach (Part part in thisLine.partList)
                 {
                     // 誰のパートか？開始時間は？
-                    string name = ColorToName(part.color);
+                    string name = Common.ToColorName(part.color);
                     writer.WriteLine($"{part.timing:00.00}, {name}");
                 }
             }
         }
         Debug.Log($"Color log saved to {logPath}");
-    }
-
-    /// <summary>
-    /// color to color NAME 
-    /// </summary>
-    /// <param name="color"></param>
-    /// <returns></returns>
-    string ColorToName(Color color)
-    {
-        if (color == Color.red) return "RED";
-        if (color == Color.green) return "GREEN";
-        if (color == Color.yellow) return "YELLOW";
-        if (color == Color.blue) return "BLUE";
-
-        return "ALL";
-    }
-
-    /// <summary>
-    /// color name to COLOR 
-    /// </summary>
-    /// <param name="colorName"></param>
-    /// <returns></returns>
-    Color NameToColor(string colorName)
-    {
-        if (colorName == "RED") return Color.red;
-        if (colorName == "GREEN") return Color.green;
-        if (colorName == "YELLOW") return Color.yellow;
-        if (colorName == "BLUE") return Color.blue;
-
-        return Color.white; // 全員で歌うパート
-    }
-
-    /// <summary>
-    /// markName to MARK
-    /// </summary>
-    /// <param name="markName"></param>
-    /// <returns></returns>
-    string MarkToChar(string markName)
-    {
-        if (markName == "Heart") return "♥";
-        if (markName == "Spade") return "♠";
-        if (markName == "Diamond") return "♦";
-        if (markName == "Club") return "♣";
-
-        return "*"; // 全員で歌う部分
     }
 
 }

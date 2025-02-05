@@ -34,14 +34,14 @@ public class Calculation : MonoBehaviour
     void Start()
     {
         LoadMicColorInfo();
-        LoadPartLog();
+        LoadCorrectPart();
         LoadMicDetectionLog();
         CalculateScore();
     }
 
     void LoadMicColorInfo()
     {
-        string filePath = Path.Combine(Application.dataPath, FileName.PlayerAssignment);
+        string filePath = Path.Combine(Application.dataPath, FileName.PlayerRole);
 
         if (!File.Exists(filePath))
         {
@@ -49,9 +49,9 @@ public class Calculation : MonoBehaviour
             return;
         }
 
-        string[] lines = File.ReadAllLines(filePath);
+        string[] lineList = File.ReadAllLines(filePath);
 
-        foreach (string line in lines)
+        foreach (string line in lineList)
         {
             string[] parts = line.Split(',');
             if (parts.Length == 3)
@@ -65,13 +65,13 @@ public class Calculation : MonoBehaviour
         Debug.Log("MicColorInfo loaded successfully.");
     }
 
-    void LoadPartLog()
+    void LoadCorrectPart()
     {
         string filePath = Path.Combine(Application.dataPath, FileName.CorrectPart);
 
         if (!File.Exists(filePath))
         {
-            Debug.LogError($"PartLog file not found: {filePath}");
+            Debug.LogError($"CorrectPart file not found: {filePath}");
             return;
         }
 

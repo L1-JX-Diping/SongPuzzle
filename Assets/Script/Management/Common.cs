@@ -1,45 +1,129 @@
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
+using Random = UnityEngine.Random;
+using Color = UnityEngine.Color;
+using System.IO;
 
 public class Common : MonoBehaviour
-{ 
-    public static string AvatarToPartMark()
-    {
+{
+    // 候補色
+    private static List<Color> _availableColors = new List<Color> { Color.green, Color.red, Color.blue, Color.yellow, Color.magenta, Color.cyan };
 
-        return "*";
+    public static List<Color> AvailableColors { get => _availableColors; set => _availableColors = value; }
+
+    /// <summary>
+    /// Read file and Return string[] which collect file content by line
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    public static string[] GetFileContents(string fileName)
+    {
+        // ファイルパスを取得
+        string filePath = Path.Combine(Application.dataPath, fileName);
+        string[] lineList = null;
+
+        // ファイルの存在確認
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"File not found: {filePath}");
+            return null;
+        }
+
+        // ファイルを行ごとに読み込む
+        lineList = File.ReadAllLines(filePath);
+        return lineList;
     }
 
     /// <summary>
-    /// color name to COLOR (return Color)
+    /// convert String To Int
+    /// </summary>
+    /// <param name="numLetter"></param>
+    /// <returns></returns>
+    public static int ToInt(string numLetter)
+    {
+        int num = 0;
+
+        if (Int32.TryParse(numLetter, out num))
+        {
+            return num;
+        }
+        else
+        {
+            Debug.Log($"Int32.TryParse could not parse string {numLetter} to an int.");
+        }
+
+        return 0;
+    }
+
+    /// <summary>
+    /// color name to COLOR (return type: Color)
     /// </summary>
     /// <param name="colorName"></param>
     /// <returns></returns>
-    public static Color NameToColor(string colorName)
+    public static Color ToColor(string colorName)
     {
         if (colorName == "RED") return Color.red;
         if (colorName == "GREEN") return Color.green;
         if (colorName == "YELLOW") return Color.yellow;
+        if (colorName == "BLUE") return Color.blue;
+        if (colorName == "MAGENTA") return Color.magenta;
+        if (colorName == "CYAN") return Color.cyan;
 
-        return Color.white;
+        return Color.white; // all players have to sing
     }
 
-    string MarkToChar(string markName)
+    /// <summary>
+    /// color to color NAME 
+    /// </summary>
+    /// <param name="color"></param>
+    /// <returns></returns>
+    public static string ToColorName(Color color)
     {
-        if (markName == "Heart") return "*";
-        if (markName == "Spade") return "!";
-        if (markName == "Diamond") return "+";
-        if (markName == "Club") return "#";
+        if (color == Color.red) return "RED";
+        if (color == Color.green) return "GREEN";
+        if (color == Color.yellow) return "YELLOW";
+        if (color == Color.blue) return "BLUE";
+        if (color == Color.magenta) return "MAGENTA";
+        if (color == Color.cyan) return "CYAN";
 
-        string chorusMark = "<<";
-        //string chorusMark = "";
-        //int i = 0;
-        //while (i < _playerCount)
-        //{
-        //    chorusMark += "<";
-        //    i++;
-        //}
-        return chorusMark; // �S���ŉ̂�����
+        return "ALL"; // all players have to sing
     }
+
+
+    /// <summary>
+    /// AVATAR name to MARK letter
+    /// </summary>
+    /// <param name="avatar"></param>
+    /// <returns></returns>
+    public static string AvatarToLetter(string avatar)
+    {
+        if (avatar == "Heart") return "♥";
+        if (avatar == "Spade") return "♠";
+        if (avatar == "Diamond") return "♦";
+        if (avatar == "Club") return "♣";
+
+        return "*"; // all players have to sing
+    }
+
+    /// <summary>
+    /// Generate numList from num(int)
+    /// </summary>
+    /// <param name="num"></param>
+    /// <returns></returns>
+    public static List<int> GenerateNumberList(int num)
+    {
+        List<int> numList = new List<int>();
+
+        for (int i = 0; i < num; i++)
+        {
+            numList.Add(i);
+        }
+
+        return numList;
+    }
+
 
     private void ShuffleList(List<string> list)
     {

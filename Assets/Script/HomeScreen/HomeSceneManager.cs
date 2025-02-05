@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement; // Scene の切り替えしたい場合に必要な宣言
 public class HomeSceneManager : MonoBehaviour
 {
     /* public な変数 (Inspector でアタッチが必要) */
-    // シーン内のDropdownをアタッチ (Visual Studio の ComboBox みたいなもの)
+    // シーン内の Dropdown をアタッチ (Visual Studio の ComboBox みたいなもの)
     public Dropdown _dropdownSongTitle;
     public Dropdown _dropdownPlayerCount;
     
@@ -31,7 +31,7 @@ public class HomeSceneManager : MonoBehaviour
         {
             string[] songList = File.ReadAllLines(filePath); // ファイル内容を行単位で読み込む
             SetDropdownSongTitles(songList); // Dropdownに追加
-            SetDropdownPlayerNum();
+            SetDropdownPlayerCount();
 
             Debug.Log($"Loaded {songList.Length} songs from {filePath}");
         }
@@ -71,6 +71,7 @@ public class HomeSceneManager : MonoBehaviour
     {
         // 現在選択されているアイテムのインデックス
         int selectedItemIndex = _dropdownSongTitle.value;
+
         // 現在選択されているアイテムのテキスト
         string songTitle = _dropdownSongTitle.options[selectedItemIndex].text;
 
@@ -78,6 +79,7 @@ public class HomeSceneManager : MonoBehaviour
 
         return songTitle;
     }
+
     string GetPlayerNum()
     {
         // 現在選択されているアイテムのインデックス
@@ -107,7 +109,7 @@ public class HomeSceneManager : MonoBehaviour
         // Dropdownを更新
         _dropdownSongTitle.RefreshShownValue();
     }
-    void SetDropdownPlayerNum()
+    void SetDropdownPlayerCount()
     {
         // Dropdownの既存の項目をクリア
         _dropdownPlayerCount.options.Clear();
@@ -131,17 +133,48 @@ public class HomeSceneManager : MonoBehaviour
     {
         // 記録ファイルのパスを取得
         string filePath = Path.Combine(Application.dataPath, FileName.MetaData);
+
+        // Get game data registered
         string songTitle = GetSongTitle();
-        string playerCount = GetPlayerNum();
+        string playerCountStr = GetPlayerNum();
+        // Create playerList (default: Player1, Player2, ...)
+        List<string> playerList = SetPlayerList(Common.ToInt(playerCountStr));
 
-        // 複数行を一度に書き込む
-        string[] lines = { songTitle, playerCount }; // 配列に各行の内容を格納
-        // ファイル 1 行目に歌の名前を記録
-        // ファイル 2 行目に参加人数を記録
-        File.WriteAllLines(filePath, lines); // 全行を一括で書き込む
+        // write into file
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            // 1 行目に歌の名前を記録
+            writer.WriteLine(songTitle);
 
-        Debug.Log($"Song title and player number saved:\n{songTitle}\n{playerCount}");
+            // 2 行目に参加人数を記録
+            writer.WriteLine(playerCountStr);
+
+            // 3 行目に players' name を Player1, Player2, Player3 の形式で記録
+            string content = string.Join(", ", playerList);
+            writer.WriteLine(content);
+
+            // for debug
+            Debug.Log($"Song title and player number saved:\n{songTitle}\n{playerCountStr}\n{content}");
+        }
     }
+
+    /// <summary>
+    /// Set List (Default: player1, player2 ...)
+    /// </summary>
+    private List<string> SetPlayerList(int playerCount)
+    {
+        List<string> playerList = new List<string>();
+        int playerNo = 1; // set from Player1
+
+        // create player name (default)
+        for (int i = 0; i < playerCount; i++, playerNo++)
+        {
+            string playerName = "Player" + playerNo.ToString();
+            playerList.Add(playerName);
+        }
+        return playerList;
+    }
+
 
     // Update is called once per frame
     void Update()
