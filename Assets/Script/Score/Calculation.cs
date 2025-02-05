@@ -9,14 +9,14 @@ public class Calculation : MonoBehaviour
     public TextMeshProUGUI _scoreDisplayText;
 
     private Dictionary<string, string> _micColorDict = new Dictionary<string, string>(); // マイクと色の対応
-    private List<PartInfo> _partInfoList = new List<PartInfo>(); // 時刻と色・マイクの正解情報
+    private List<Part> _partInfoList = new List<Part>(); // 時刻と色・マイクの正解情報
     private List<Detection> _detectionList = new List<Detection>(); // 時刻ごとの検出情報
 
     private int _totalScore = 0; // 合計スコア
     private int _maxScore = 0;   // 最大スコア（100点満点換算用）
 
     [System.Serializable]
-    public class PartInfo
+    public class Part
     {
         public float time;       // 時刻
         public string color;     // 正解の色
@@ -41,15 +41,7 @@ public class Calculation : MonoBehaviour
 
     void LoadMicColorInfo()
     {
-        string filePath = Path.Combine(Application.dataPath, FileName.PlayerRole);
-
-        if (!File.Exists(filePath))
-        {
-            Debug.LogError($"MicColorInfo file not found: {filePath}");
-            return;
-        }
-
-        string[] lineList = File.ReadAllLines(filePath);
+        string[] lineList = Common.GetTXTFileLineList(FileName.PlayerRole);
 
         foreach (string line in lineList)
         {
@@ -67,15 +59,7 @@ public class Calculation : MonoBehaviour
 
     void LoadCorrectPart()
     {
-        string filePath = Path.Combine(Application.dataPath, FileName.CorrectPart);
-
-        if (!File.Exists(filePath))
-        {
-            Debug.LogError($"CorrectPart file not found: {filePath}");
-            return;
-        }
-
-        string[] lineList = File.ReadAllLines(filePath);
+        string[] lineList = Common.GetTXTFileLineList(FileName.CorrectPart);
 
         foreach (string line in lineList)
         {
@@ -95,7 +79,7 @@ public class Calculation : MonoBehaviour
                     }
                 }
 
-                _partInfoList.Add(new PartInfo 
+                _partInfoList.Add(new Part 
                 { 
                     time = time, 
                     color = color, 
@@ -109,17 +93,9 @@ public class Calculation : MonoBehaviour
 
     void LoadMicDetectionLog()
     {
-        string filePath = Path.Combine(Application.dataPath, FileName.MicDitection);
+        string[] lineList = Common.GetTXTFileLineList(FileName.MicDitection);
 
-        if (!File.Exists(filePath))
-        {
-            Debug.LogError($"MicDetectionLog file not found: {filePath}");
-            return;
-        }
-
-        string[] lines = File.ReadAllLines(filePath);
-
-        foreach (string line in lines)
+        foreach (string line in lineList)
         {
             if (line.StartsWith("#")) continue; // コメント行をスキップ
 

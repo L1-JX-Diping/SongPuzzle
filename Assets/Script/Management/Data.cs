@@ -8,19 +8,23 @@ using System.Collections.Generic;
 /// <summary>
 /// Save Game Data
 /// </summary>
-public class GameData : MonoBehaviour
+public class Data 
 {
-    // 別のスクリプトからアクセスできるように static にする
+    // game meta data
     private static string _songTitle = "";
     private static int _playerCount = 0;
     private static List<string> _playerList = new List<string>();
 
+    // selected song parameter
+    private static float _clock = 3f; // Second per Beat
+    private static float _beat = 4; // 何拍子か？ Birthday song は 3 拍子
+
     /// <summary>
     /// constructor: will be called at the first
     /// </summary>
-    public GameData() 
+    public Data() 
     {
-        SetAllData();
+        SetAllDataFromTXT();
     }
 
     // For Accessing game data from other class
@@ -51,16 +55,9 @@ public class GameData : MonoBehaviour
     /// You should call this function at the first
     /// Load game meta data from file "GameInfo.txt"
     /// </summary>
-    public static void SetAllData()
+    public static void SetAllDataFromTXT()
     {
-        string filePath = Path.Combine(Application.dataPath, FileName.MetaData);
-
-        if (!File.Exists(filePath))
-        {
-            Debug.LogError($"PartLog file not found: {filePath}");
-        }
-
-        string[] lineList = File.ReadAllLines(filePath);
+        string[] lineList = Common.GetTXTFileLineList(FileName.MetaData);
 
         // Get song title without SPACE
         string noSpace = lineList[0].Replace(" ", ""); // 空白をすべて削除
@@ -75,6 +72,7 @@ public class GameData : MonoBehaviour
         {
             _playerList.Add(playerName);
         }
+
     }
     
     //public static List<string> GetPlayerList()

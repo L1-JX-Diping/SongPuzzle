@@ -5,8 +5,9 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 using Color = UnityEngine.Color;
 using System.IO;
+using System.Xml.Serialization;
 
-public class Common : MonoBehaviour
+public class Common 
 {
     // 候補色
     private static List<Color> _availableColors = new List<Color> { Color.green, Color.red, Color.blue, Color.yellow, Color.magenta, Color.cyan };
@@ -14,24 +15,98 @@ public class Common : MonoBehaviour
     public static List<Color> AvailableColors { get => _availableColors; set => _availableColors = value; }
 
     /// <summary>
+    /// Save information to XML file
+    /// [parameter1] object that has the information you wanna save
+    /// [parameter2] export to where? (file name)
+    /// </summary>
+    /// <param name="obj"></param>
+    /// <param name="fileName"></param>
+    public static void ExportToXml(object obj, string fileName)
+    {
+        // make sure that file path exists
+        string path = GetFilePath(fileName);
+        if (path == null) return;
+
+        try
+        {
+            XmlSerializer serializer = new XmlSerializer(obj.GetType());
+            using (StreamWriter writer = new StreamWriter(path))
+            {
+                serializer.Serialize(writer, obj);
+            }
+
+            Debug.Log($"Lyrics data saved to XML {fileName}: {path}");
+        }
+        catch (IOException ex)
+        {
+            Debug.LogError($"Failed to save XML {fileName}: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Load information and RETURN object has that information. 
+    /// [parameter1] expected object type to be returned 
+    /// [parameter2] read from where? (file name)
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    public static object LoadXml(Type type, string fileName)
+    {
+        object result = null;
+        // make sure that file path exists
+        string path = GetFilePath(fileName);
+        if (path == null) return null;
+
+        try
+        {
+            XmlSerializer serializer = new XmlSerializer(type);
+            using (StreamReader reader = new StreamReader(path))
+            {
+                result = (List<Player>)serializer.Deserialize(reader);
+            }
+
+            Debug.Log($"Player roles loaded from XML {fileName}: {path}");
+        }
+        catch (IOException ex)
+        {
+            Debug.LogError($"Failed to load XML {fileName}: {ex.Message}");
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Get file path which is definitely exist 
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
+    public static string GetFilePath(string fileName)
+    {
+        // Get the file path
+        string filePath = Path.Combine(Application.dataPath, fileName);
+
+        // check if the file path exist or not
+        if (!File.Exists(filePath))
+        {
+            Debug.LogError($"File {fileName} not found: {filePath}");
+            return null;
+        }
+
+        return filePath;
+    }
+
+    /// <summary>
     /// Read file and Return string[] which collect file content by line
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public static string[] GetFileContents(string fileName)
+    public static string[] GetTXTFileLineList(string fileName)
     {
-        // ファイルパスを取得
-        string filePath = Path.Combine(Application.dataPath, fileName);
+        string filePath = GetFilePath(fileName);
         string[] lineList = null;
 
-        // ファイルの存在確認
-        if (!File.Exists(filePath))
-        {
-            Debug.LogError($"File not found: {filePath}");
-            return null;
-        }
-
-        // ファイルを行ごとに読み込む
+        // read line by line from  the file
         lineList = File.ReadAllLines(filePath);
         return lineList;
     }

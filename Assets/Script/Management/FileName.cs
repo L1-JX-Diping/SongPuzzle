@@ -12,6 +12,9 @@ public class FileName : MonoBehaviour
     private static string _correctPart = "CorrectPart.txt";
     private static string _micDitection = "MicDetectionLog.txt";
     private static string _songTitleList = "SongTitleList.txt";
+    // XML
+    private static string _xmlPlayerRole = "PlayerRole.xml";
+    private static string _xmlLyricsDivision = "LyricsDivision.xml";
 
     // プロパティを通じてファイル名を取得・設定
     /// <summary>
@@ -52,4 +55,14 @@ public class FileName : MonoBehaviour
     /// X'mas Song \n 
     /// </summary>
     public static string SongTitleList { get => _songTitleList; set => _songTitleList = value; }
+
+    /// <summary>
+    /// [format: xml] content: Player role (name, color, avatar, mic)
+    /// </summary>
+    public static string XmlPlayerRole { get => _xmlPlayerRole; set => _xmlPlayerRole = value; }
+
+    /// <summary>
+    /// [format: xml] content: divided lyrics into parts (correct parts assignment information)
+    /// </summary>
+    public static string XmlLyricsDivision { get => _xmlLyricsDivision; set => _xmlLyricsDivision = value; }
 }

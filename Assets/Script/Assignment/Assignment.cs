@@ -2,8 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI; // UI 扱うので
-using UnityEngine.SceneManagement;
-using TMPro; // Scene の切り替えしたい場合に必要な宣言
+using UnityEngine.SceneManagement; // Scene の切り替えしたい場合に必要な宣言
 
 public class Assignment : MonoBehaviour
 {
@@ -20,16 +19,7 @@ public class Assignment : MonoBehaviour
 
     // Home シーンで x = 2 人で遊ぶを選んだら GameInfo.txt にそれが出力される
     // ここでは GameInfo.txt 読み込んで x 個のマイクを検出し、色を割り当てる
-
-    [System.Serializable]
-    public class Player
-    {
-        public string name;
-        public Color color; // 割り当てた色
-        public string micDevice; // マイク名
-        public string avatar; // mark 
-    }
-
+    
     void Start()
     {
         // Get and Set game data registered in previous page from file
@@ -39,13 +29,11 @@ public class Assignment : MonoBehaviour
         AssignRoleToPlayers();
 
         // 画面にマイクと色の対応を表示する
-        WriteIntoScreen();
+        DisplayOnScreen();
 
-        // パートの色とマイクの対応を保存
+        // Save Player role (name, color, avatar(mark),mic)
         SavePlayerRoleToFile();
-
-        // Avatar(mark) と Color(string) の対応を保存
-        //SaveAvatarDictToFile();
+        Common.ExportToXml(_playerRoleList, FileName.PlayerRole);
 
         // ボタンが押されたらこれを実行 Switch Scene
         //GameObject.Find("ButtonStart").GetComponent<Button>().onClick.AddListener(ButtonClicked);
@@ -57,17 +45,17 @@ public class Assignment : MonoBehaviour
     private void SetGameData()
     {
         // set data to GameData class
-        GameData.SetAllData();
+        Data.SetAllDataFromTXT();
 
         // get from the data set to GameData class
-        _songTitle = GameData.SongTitle;
-        _playerCount = GameData.PlayerCount;
-        _playerList = GameData.PlayerList;
+        _songTitle = Data.SongTitle;
+        _playerCount = Data.PlayerCount;
+        _playerList = Data.PlayerList;
 
         // for debug
-        Debug.Log($"### SongTitle, PlayerCount get from GameData.cs:\n {_songTitle}, {_playerCount} \n");
-        Debug.Log($"### PlayerList created: \n");
-        foreach (string playerName in _playerList) Debug.Log($"{playerName} "); 
+        //Debug.Log($"### SongTitle, PlayerCount get from GameData.cs:\n {_songTitle}, {_playerCount} \n");
+        //Debug.Log($"### PlayerList created: \n");
+        //foreach (string playerName in _playerList) Debug.Log($"{playerName} "); 
     }
 
     /// <summary>
@@ -85,7 +73,7 @@ public class Assignment : MonoBehaviour
         SceneManager.LoadScene("DisplayLyrics");
     }
 
-    private void WriteIntoScreen()
+    private void DisplayOnScreen()
     {
         /* display mic(assignment) information */
         for (int index = 0; index < _playerCount; index++)
@@ -233,26 +221,6 @@ public class Assignment : MonoBehaviour
         Debug.Log($"There are {_playerCount} players and {_micList.Count} mics are assigned to each player.");
     }
 
-
-    /// <summary>
-    /// Save information to file
-    /// </summary>
-    private void SavePlayerRoleToFile()
-    {
-        string filePath = Path.Combine(Application.dataPath, FileName.PlayerRole);
-
-        using (StreamWriter writer = new StreamWriter(filePath))
-        {
-            foreach (Player player in _playerRoleList)
-            {
-                // Player1, Red, Heart, Mic1 
-                writer.WriteLine($"{player.name}, {Common.ToColorName(player.color)}, {player.avatar}, {player.micDevice}");
-            }
-        }
-
-        Debug.Log($"Color information saved to {filePath}");
-    }
-
     /// <summary>
     /// Set Color to Avatar
     /// </summary>
@@ -365,22 +333,23 @@ public class Assignment : MonoBehaviour
         }
     }
 
-    ///// <summary>
-    ///// 要らなくなるかも
-    ///// </summary>
-    //private void SaveAvatarDictToFile()
-    //{
-    //    string filePath = Path.Combine(Application.dataPath, FileName.AvatarColorPairing);
+    /// <summary>
+    /// Save information to file
+    /// </summary>
+    private void SavePlayerRoleToFile()
+    {
+        string filePath = Path.Combine(Application.dataPath, FileName.PlayerRole);
 
-    //    using (StreamWriter writer = new StreamWriter(filePath))
-    //    {
-    //        foreach (var avatar in _avatarColorDict)
-    //        {
-    //            writer.WriteLine($"{avatar.Key}, {avatar.Value}");
-    //        }
-    //    }
+        using (StreamWriter writer = new StreamWriter(filePath))
+        {
+            foreach (Player player in _playerRoleList)
+            {
+                // Player1, Red, Heart, Mic1 
+                writer.WriteLine($"{player.name}, {Common.ToColorName(player.color)}, {player.avatar}, {player.micDevice}");
+            }
+        }
 
-    //    Debug.Log($"Color information saved to {filePath}");
-    //}
+        Debug.Log($"Color information saved to {filePath}");
+    }
 
 }
