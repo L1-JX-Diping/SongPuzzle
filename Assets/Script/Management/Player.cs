@@ -6,8 +6,13 @@ using UnityEngine;
 [System.Serializable]
 public class Player 
 {
-    public string name;
-    public Color color; // 割り当てた色
-    public string avatar; // mark 
-    public string micDevice; // マイク名
+    private int _id;
+    private string _name;
+    private Role _role;
+
+    public int Id { get => _id; set => _id = value; }
+
+    public string Name { get => _name; set => _name = value; }
+    
+    public Role Role { get => _role; set => _role = value; }
 }

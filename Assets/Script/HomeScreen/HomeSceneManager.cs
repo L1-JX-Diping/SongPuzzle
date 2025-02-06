@@ -15,6 +15,10 @@ public class HomeSceneManager : MonoBehaviour
     {
         // Set select song field 
         SetDropdown();
+
+        // Register
+        // At the start of the game, if a player has not registered, they can select 'Play as Anonymous'.
+
         //Dropdown _dropdownSongTitle = GameObject.Find("Dropdown-SelectSong").GetComponent<Dropdown>();
 
         // ボタンが押されたらこれを実行
@@ -40,18 +44,68 @@ public class HomeSceneManager : MonoBehaviour
             Debug.LogError($"File not found: {filePath}");
         }
     }
+    
+    private void SaveDataToXML()
+    {
+        Song song = new Song();
+        Team team = new Team();
 
-    void ButtonClicked()
+        /* Get game data registered */
+        song.Title = GetSongTitle();
+        string playerCountStr = GetPlayerCount();
+        int count = Common.ToInt(playerCountStr);
+        // Create playerList 
+        // ***Update*** Register players
+        List<Player> playerList = SetPlayerListForTeam0(count);
+
+        // default: 'Play as Anonymous'
+        team.ID = 0;
+        team.CountMembers = count;
+        team.MemberList = playerList;
+
+        /* Set to gameData list */
+        Data data = new Data();
+        data.Song = song;
+        data.Team = team;
+
+        // 
+        Common.ExportToXml(data, FileName.XmlGameData); // create data (registered at Home scene)
+    }
+
+    /// <summary>
+    /// Set List (Default: player1, player2 ...)
+    /// </summary>
+    private List<Player> SetPlayerListForTeam0(int playerCount)
+    {
+        List<Player> playerList = new List<Player>();
+        int playerNo = 1; // set from Player1
+
+        // create player name (default)
+        for (int i = 0; i < playerCount; i++, playerNo++)
+        {
+            string playerName = "Player" + playerNo.ToString();
+            Player player = new Player();
+            // Only add player name in this class
+            player.Name = playerName;
+            playerList.Add(player);
+        }
+        return playerList;
+    }
+
+    /// <summary>
+    /// if Button Clicked: save data and switch scene
+    /// </summary>
+    private void ButtonClicked()
     {
         // Game する歌の名前と人数を保存
-        SaveGameInfo();
+        SaveDataToXML();
 
         // 選択された歌が Birthday song なら準備できてるのでゲーム画面へ GO
         // それ以外の歌なら準備中・・・画面へ go
         SwitchScene();
     }
 
-    void SwitchScene()
+    private void SwitchScene()
     {
         string songTitle = GetSongTitle();
         if (songTitle == "Birthday Song")
@@ -80,16 +134,16 @@ public class HomeSceneManager : MonoBehaviour
         return songTitle;
     }
 
-    string GetPlayerNum()
+    string GetPlayerCount()
     {
         // 現在選択されているアイテムのインデックス
         int selectedItemIndex = _dropdownPlayerCount.value;
         // 現在選択されているアイテムのテキスト
-        string playerNum = _dropdownPlayerCount.options[selectedItemIndex].text;
+        string count = _dropdownPlayerCount.options[selectedItemIndex].text;
 
-        Debug.Log($"Currently Selected Item: {playerNum} (Index: {selectedItemIndex})");
+        Debug.Log($"Currently Selected Item: {count} (Index: {selectedItemIndex})");
 
-        return playerNum;
+        return count;
     }
 
     void SetDropdownSongTitles(string[] titles)
@@ -128,53 +182,6 @@ public class HomeSceneManager : MonoBehaviour
         // Dropdownを更新
         _dropdownPlayerCount.RefreshShownValue();
     }
-
-    void SaveGameInfo()
-    {
-        // 記録ファイルのパスを取得
-        string filePath = Path.Combine(Application.dataPath, FileName.MetaData);
-
-        // Get game data registered
-        string songTitle = GetSongTitle();
-        string playerCountStr = GetPlayerNum();
-        // Create playerList (default: Player1, Player2, ...)
-        List<string> playerList = SetPlayerList(Common.ToInt(playerCountStr));
-
-        // write into file
-        using (StreamWriter writer = new StreamWriter(filePath))
-        {
-            // 1 行目に歌の名前を記録
-            writer.WriteLine(songTitle);
-
-            // 2 行目に参加人数を記録
-            writer.WriteLine(playerCountStr);
-
-            // 3 行目に players' name を Player1, Player2, Player3 の形式で記録
-            string content = string.Join(", ", playerList);
-            writer.WriteLine(content);
-
-            // for debug
-            Debug.Log($"Song title and player number saved:\n{songTitle}\n{playerCountStr}\n{content}");
-        }
-    }
-
-    /// <summary>
-    /// Set List (Default: player1, player2 ...)
-    /// </summary>
-    private List<string> SetPlayerList(int playerCount)
-    {
-        List<string> playerList = new List<string>();
-        int playerNo = 1; // set from Player1
-
-        // create player name (default)
-        for (int i = 0; i < playerCount; i++, playerNo++)
-        {
-            string playerName = "Player" + playerNo.ToString();
-            playerList.Add(playerName);
-        }
-        return playerList;
-    }
-
 
     // Update is called once per frame
     void Update()

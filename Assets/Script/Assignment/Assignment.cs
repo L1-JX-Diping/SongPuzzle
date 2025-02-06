@@ -6,56 +6,52 @@ using UnityEngine.SceneManagement; // Scene の切り替えしたい場合に必
 
 public class Assignment : MonoBehaviour
 {
+    // access to game data
+    Data _data = new Data();
+    // 
     private List<string> _micList = new List<string>(); // 検出されたマイク名
-    private List<Player> _playerRoleList = new List<Player>(); // 割り当てたマイクと色の情報
     private Dictionary<string, string> _avatarColorDict = new Dictionary<string, string>();
-    // 候補となるアバター(今は順番に割り当て)
-    // random 割り当てしなきゃ
+    // 候補となるアバター(今は順番に割り当て) // ***Update*** random 割り当てしなきゃ
     private List<string> _avatarList = new List<string> { "Heart", "Spade", "Diamond", "Club" }; // Heart, Spade, Diamond, Club の順で固定
     // to access game data
-    private string _songTitle = "";
     private int _playerCount = 0;
-    private List<string> _playerList = new List<string>();
+    private List<Player> _playerList = new List<Player>(); // 割り当て情報
 
-    // Home シーンで x = 2 人で遊ぶを選んだら GameInfo.txt にそれが出力される
-    // ここでは GameInfo.txt 読み込んで x 個のマイクを検出し、色を割り当てる
-    
     void Start()
     {
         // Get and Set game data registered in previous page from file
-        SetGameData();
+        LoadData();
 
         // color assignment 
         AssignRoleToPlayers();
 
-        // 画面にマイクと色の対応を表示する
+        // display role assignment on the screen
         DisplayOnScreen();
 
         // Save Player role (name, color, avatar(mark),mic)
-        SavePlayerRoleToFile();
-        Common.ExportToXml(_playerRoleList, FileName.PlayerRole);
+        SaveDataToFile();
 
         // ボタンが押されたらこれを実行 Switch Scene
         //GameObject.Find("ButtonStart").GetComponent<Button>().onClick.AddListener(ButtonClicked);
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    private void SaveDataToFile()
+    {
+        _data.Team.MemberList = _playerList; // player role added
+        Common.ExportToXml(_data, FileName.XmlGameData); // update player role
+    }
+
+    /// <summary>
     /// Set game data to use in this class
     /// </summary>
-    private void SetGameData()
+    private void LoadData()
     {
-        // set data to GameData class
-        Data.SetAllDataFromTXT();
-
-        // get from the data set to GameData class
-        _songTitle = Data.SongTitle;
-        _playerCount = Data.PlayerCount;
-        _playerList = Data.PlayerList;
-
-        // for debug
-        //Debug.Log($"### SongTitle, PlayerCount get from GameData.cs:\n {_songTitle}, {_playerCount} \n");
-        //Debug.Log($"### PlayerList created: \n");
-        //foreach (string playerName in _playerList) Debug.Log($"{playerName} "); 
+        _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
+        _playerCount = _data.Team.CountMembers;
+        _playerList = _data.Team.MemberList; // already include players' name
     }
 
     /// <summary>
@@ -93,8 +89,7 @@ public class Assignment : MonoBehaviour
         Text micColorField;
         Text micNameField;
 
-        // get current player name
-        string playerName = _playerList[index]; // Player1, Player2... or Robot
+        // Default: Play as Anoymous
         int playerNo = index + 1; // playerNo: from 1, index: from 0
 
         // Set text field to display assignment information
@@ -109,12 +104,13 @@ public class Assignment : MonoBehaviour
         if (micColorField != null && micNameField != null)
         {
             // Get and Set assignment information for this player
-            Player player = _playerRoleList[index];
-            Color color = player.color;
+            Player player = _playerList[index];
+            Role role = player.Role;
+            Color color = role.Color;
             string colorName = Common.ToColorName(color);
 
             // Display mic DEVICE name
-            micNameField.text = playerName + ": \n [mic]: " + player.micDevice;
+            micNameField.text = player.Name + ": \n [mic]: " + role.Mic;
 
             // Display assigned COLOR name
             micColorField.text = colorName; // display text (color name)
@@ -152,17 +148,16 @@ public class Assignment : MonoBehaviour
         // Set player role
         for (int i = 0; i < _playerCount; i++)
         {
-            // 構造体に追加
-            _playerRoleList.Add(new Player
-            {
-                name = _playerList[i],
-                micDevice = _micList[i],
-                color = colors[i],
-                avatar = _avatarList[i]
-            });
+            Role role = new Role();
+            role.Color = colors[i];
+            role.Avatar = _avatarList[i];
+            role.Mic = _micList[i];
+
+            // add to player list
+            _playerList[i].Role = role;
 
             // for debug
-            Debug.Log($"Assigned color {colors[i]} to {_micList[i]}");
+            Debug.Log($"Assignment: {_playerList[i].Name}, {Common.ToColorName(colors[i])}, {_micList[i]}, {_avatarList[i]}");
         }
     }
 
@@ -242,7 +237,7 @@ public class Assignment : MonoBehaviour
             {
                 // ImageのColorプロパティに色を設定
                 avatarImage.color = color;
-                Debug.Log($"Color {color} applied to {avatarName}.");
+                Debug.Log($"Color {Common.ToColorName(color)} applied to {avatarName}.");
             }
             else
             {
@@ -284,72 +279,6 @@ public class Assignment : MonoBehaviour
         }
 
         return result;
-    }
-
-
-    /// <summary>
-    /// Robot part
-    /// </summary>
-    private void DisplayRobotPartAssignment()
-    {
-        // 名前で UI オブジェクトを探す
-        Text mic3ColorField = GameObject.Find("Color3").GetComponent<Text>();
-        Text mic3NameField = GameObject.Find("MicName3").GetComponent<Text>();
-
-        if (mic3ColorField != null)
-        {
-            Color targetColor = Color.white;
-
-            // _colorNameListから未使用の色を検索
-            foreach (Color color in Common.AvailableColors)
-            {
-                if (color != _playerRoleList[0].color && color != _playerRoleList[1].color)
-                {
-                    targetColor = color; // 未使用の色を設定
-                    break; // 最初に見つけた未使用の色でループを終了
-                }
-            }
-            string colorName = Common.ToColorName(targetColor);
-            // text 
-            mic3ColorField.text = colorName; // パート色表示
-            // text color
-            mic3ColorField.color = targetColor;
-            // avatar name (mark)
-            ReflectToAvatar("Avatar3", targetColor);
-            //_markColorDict
-            if (!_avatarColorDict.ContainsKey(colorName)) _avatarColorDict[colorName] = _avatarList[2];
-        }
-        else
-        {
-            Debug.LogError($"Text field {mic3ColorField} is not assigned.");
-        }
-        if (mic3NameField != null)
-        {
-            mic3NameField.text = "Robot Part"; // 機械の担当パート, 満点扱い
-        }
-        else
-        {
-            Debug.LogError($"Text field {mic3NameField} is not assigned.");
-        }
-    }
-
-    /// <summary>
-    /// Save information to file
-    /// </summary>
-    private void SavePlayerRoleToFile()
-    {
-        string filePath = Path.Combine(Application.dataPath, FileName.PlayerRole);
-
-        using (StreamWriter writer = new StreamWriter(filePath))
-        {
-            foreach (Player player in _playerRoleList)
-            {
-                // Player1, Red, Heart, Mic1 
-                writer.WriteLine($"{player.name}, {Common.ToColorName(player.color)}, {player.avatar}, {player.micDevice}");
-            }
-        }
-
-        Debug.Log($"Color information saved to {filePath}");
     }
 
 }

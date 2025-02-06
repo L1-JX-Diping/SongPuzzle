@@ -23,9 +23,9 @@ public class Common
     /// <param name="fileName"></param>
     public static void ExportToXml(object obj, string fileName)
     {
-        // make sure that file path exists
-        string path = GetFilePath(fileName);
-        if (path == null) return;
+        // dont need to make sure that file path exists
+        // if not exist, system will make new file automatically
+        string path = Path.Combine(Application.dataPath, fileName);
 
         try
         {
@@ -63,7 +63,7 @@ public class Common
             XmlSerializer serializer = new XmlSerializer(type);
             using (StreamReader reader = new StreamReader(path))
             {
-                result = (List<Player>)serializer.Deserialize(reader);
+                result = serializer.Deserialize(reader);
             }
 
             Debug.Log($"Player roles loaded from XML {fileName}: {path}");
@@ -199,6 +199,21 @@ public class Common
         return numList;
     }
 
+    /// <summary>
+    /// アプリケーションを終了する処理
+    /// </summary>
+    public static void QuitApp()
+    {
+        Debug.Log("APP QUIT: アプリケーション終了処理を実行");
+
+#if UNITY_EDITOR
+        // エディタ上で実行を停止する（エディタ用）
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        // 実行ファイルの場合はアプリケーションを終了
+        Application.Quit();
+#endif
+    }
 
     private void ShuffleList(List<string> list)
     {

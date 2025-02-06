@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfPlayer xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Player>
+    <name>Player1</name>
+    <color>
+      <r>1</r>
+      <g>0</g>
+      <b>1</b>
+      <a>1</a>
+    </color>
+    <avatar>Heart</avatar>
+    <micDevice>Mic1(Just singing)</micDevice>
+  </Player>
+  <Player>
+    <name>Player2</name>
+    <color>
+      <r>0</r>
+      <g>1</g>
+      <b>1</b>
+      <a>1</a>
+    </color>
+    <avatar>Spade</avatar>
+    <micDevice>Mic2(Just singing)</micDevice>
+  </Player>
+  <Player>
+    <name>Player3</name>
+    <color>
+      <r>0</r>
+      <g>0</g>
+      <b>1</b>
+      <a>1</a>
+    </color>
+    <avatar>Diamond</avatar>
+    <micDevice>Mic3(Just singing)</micDevice>
+  </Player>
+</ArrayOfPlayer>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfLine xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Line>
+    <timing>0</timing>
+    <text />
+    <partList />
+  </Line>
+  <Line>
+    <timing>4</timing>
+    <text>Happy birthday to you</text>
+    <partList>
+      <Part>
+        <Timing>4</Timing>
+        <Word>Happy</Word>
+        <Player>
+          <id>0</id>
+          <name>Player2</name>
+          <color>
+            <r>0</r>
+            <g>1</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Spade</avatar>
+          <micDevice>Mic2(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>4.16666651</Timing>
+        <Word>birthday</Word>
+        <Player>
+          <id>0</id>
+          <name>Player1</name>
+          <color>
+            <r>1</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Heart</avatar>
+          <micDevice>Mic1(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>4.5</Timing>
+        <Word>to</Word>
+        <Player>
+          <id>0</id>
+          <name>Player3</name>
+          <color>
+            <r>0</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Diamond</avatar>
+          <micDevice>Mic3(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>4.66666651</Timing>
+        <Word>you</Word>
+        <Player>
+          <id>0</id>
+          <name>Player3</name>
+          <color>
+            <r>0</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Diamond</avatar>
+          <micDevice>Mic3(Just singing)</micDevice>
+        </Player>
+      </Part>
+    </partList>
+  </Line>
+  <Line>
+    <timing>7</timing>
+    <text>Happy birthday to you</text>
+    <partList>
+      <Part>
+        <Timing>7</Timing>
+        <Word>Happy</Word>
+        <Player>
+          <id>0</id>
+          <name>Player2</name>
+          <color>
+            <r>0</r>
+            <g>1</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Spade</avatar>
+          <micDevice>Mic2(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>7.16666651</Timing>
+        <Word>birthday</Word>
+        <Player>
+          <id>0</id>
+          <name>Player1</name>
+          <color>
+            <r>1</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Heart</avatar>
+          <micDevice>Mic1(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>7.5</Timing>
+        <Word>to</Word>
+        <Player>
+          <id>0</id>
+          <name>Player1</name>
+          <color>
+            <r>1</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Heart</avatar>
+          <micDevice>Mic1(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>7.66666651</Timing>
+        <Word>you</Word>
+        <Player>
+          <id>0</id>
+          <name>Player2</name>
+          <color>
+            <r>0</r>
+            <g>1</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Spade</avatar>
+          <micDevice>Mic2(Just singing)</micDevice>
+        </Player>
+      </Part>
+    </partList>
+  </Line>
+  <Line>
+    <timing>10</timing>
+    <text>Happy birthday dear Lily</text>
+    <partList>
+      <Part>
+        <Timing>10</Timing>
+        <Word>Happy</Word>
+        <Player>
+          <id>0</id>
+          <name>Player1</name>
+          <color>
+            <r>1</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Heart</avatar>
+          <micDevice>Mic1(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>10.166667</Timing>
+        <Word>birthday</Word>
+        <Player>
+          <id>0</id>
+          <name>Player1</name>
+          <color>
+            <r>1</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Heart</avatar>
+          <micDevice>Mic1(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>10.5</Timing>
+        <Word>dear</Word>
+        <Player>
+          <id>0</id>
+          <name>Player3</name>
+          <color>
+            <r>0</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Diamond</avatar>
+          <micDevice>Mic3(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>10.666667</Timing>
+        <Word>Lily</Word>
+        <Player>
+          <id>0</id>
+          <name>Player1</name>
+          <color>
+            <r>1</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Heart</avatar>
+          <micDevice>Mic1(Just singing)</micDevice>
+        </Player>
+      </Part>
+    </partList>
+  </Line>
+  <Line>
+    <timing>13</timing>
+    <text>Happy birthday to you</text>
+    <partList>
+      <Part>
+        <Timing>13</Timing>
+        <Word>Happy</Word>
+        <Player>
+          <id>0</id>
+          <name>Player1</name>
+          <color>
+            <r>1</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Heart</avatar>
+          <micDevice>Mic1(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>13.166667</Timing>
+        <Word>birthday</Word>
+        <Player>
+          <id>0</id>
+          <name>Player2</name>
+          <color>
+            <r>0</r>
+            <g>1</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Spade</avatar>
+          <micDevice>Mic2(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>13.5</Timing>
+        <Word>to</Word>
+        <Player>
+          <id>0</id>
+          <name>Player2</name>
+          <color>
+            <r>0</r>
+            <g>1</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Spade</avatar>
+          <micDevice>Mic2(Just singing)</micDevice>
+        </Player>
+      </Part>
+      <Part>
+        <Timing>13.666667</Timing>
+        <Word>you</Word>
+        <Player>
+          <id>0</id>
+          <name>Player3</name>
+          <color>
+            <r>0</r>
+            <g>0</g>
+            <b>1</b>
+            <a>1</a>
+          </color>
+          <avatar>Diamond</avatar>
+          <micDevice>Mic3(Just singing)</micDevice>
+        </Player>
+      </Part>
+    </partList>
+  </Line>
+  <Line>
+    <timing>16</timing>
+    <text>GAME END.</text>
+    <partList />
+  </Line>
+  <Line>
+    <timing>18</timing>
+    <text />
+    <partList />
+  </Line>
+</ArrayOfLine>

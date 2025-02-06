@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,37 +13,41 @@ public class MicDetection : MonoBehaviour
     private int _sampleWindow = 128; // 音量解析に使用するサンプル数
     private int _index = 0;
 
+    private Data _data = new Data();
+
     private List<AudioClip> _microphoneClips = new List<AudioClip>(); // マイクからの入力を保存
     private List<string> _microphoneNames = new List<string>(); // 接続されているマイクの名前
-    private List<MicVolumeInfo> _detectedList = new List<MicVolumeInfo>(); // 検出データの記録
+    private List<Detection> _detectedList = new List<Detection>(); // 検出データの記録
 
-    private List<StartSingInfo> _timingList = new List<StartSingInfo>(); // 歌い出しタイミングリスト
-
-    [System.Serializable]
-    public class StartSingInfo
-    {
-        public float timing; // タイミング
-        public string color; // 色
-    }
-
-    [System.Serializable]
-    public class MicVolumeInfo
-    {
-        public float time; // 検出時刻
-        public string mic; // 検出されたマイク名
-        public float volume; // 検出された音量
-    }
+    private List<Part> _correctParts = new List<Part>(); // 歌い出しタイミングリスト
 
     void Start()
     {
-        // PartLogファイルを読み込む
-        ReadPartLog();
+        // Load correct part division
+        LoadData();
 
         // マイクの初期設定
         InitializeMicrophones();
 
         // ButtonClicked: Save information and Switch scene
         GameObject.Find("ViewScore").GetComponent<Button>().onClick.AddListener(ButtonClicked);
+    }
+
+    private void LoadData()
+    {
+        _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
+        List<Line> lyricsList = _data.Song.Lyrics;
+
+        /* Set correct parts */
+        foreach (Line line in lyricsList)
+        {
+            foreach (Part part in line.PartList)
+            {
+                _correctParts.Add(part);
+            }
+        }
+
+        Debug.Log("PartLog loaded successfully.");
     }
 
     private void ButtonClicked()
@@ -60,7 +65,7 @@ public class MicDetection : MonoBehaviour
         float detectionTime = Time.timeSinceLevelLoad;
 
         // 現在のパートを歌い始めるべき時間になったら声の検出を開始
-        if (_index < _timingList.Count && _timingList[_index].timing <= detectionTime)
+        if (_index < _correctParts.Count && _correctParts[_index].Timing <= detectionTime)
         {
             // 各マイクについて音声を検出
             for (int i = 0; i < _microphoneClips.Count; i++)
@@ -77,11 +82,11 @@ public class MicDetection : MonoBehaviour
                     if (volume > _detectionThreshold)
                     {
                         Debug.Log($"Mic detected from {micName} at {detectionTime:F2} seconds, Volume: {volume:F4}");
-                        _detectedList.Add(new MicVolumeInfo
+                        _detectedList.Add(new Detection
                         {
-                            time = detectionTime,
-                            mic = micName,
-                            volume = volume
+                            Timing = detectionTime,
+                            Mic = micName,
+                            Volume = volume
                         });
                     }
                 }
@@ -133,35 +138,6 @@ public class MicDetection : MonoBehaviour
         return maxAmplitude;
     }
 
-    private void ReadPartLog()
-    {
-        string filePath = Path.Combine(Application.dataPath, FileName.CorrectPart);
-
-        if (!File.Exists(filePath))
-        {
-            Debug.LogError($"File not found: {filePath}");
-            return;
-        }
-
-        string[] lines = File.ReadAllLines(filePath);
-
-        foreach (string line in lines)
-        {
-            // コンマで区切って分割
-            string[] parts = line.Split(',');
-
-            if (parts.Length == 2 && float.TryParse(parts[0].Trim(), out float timing))
-            {
-                string color = parts[1].Trim();
-                _timingList.Add(new StartSingInfo { timing = timing, color = color });
-            }
-            else
-            {
-                Debug.LogWarning($"Invalid line format: {line}");
-            }
-        }
-    }
-
     private void SaveMicDetectionLog()
     {
         // 音声検知時間をファイルに記録
@@ -169,9 +145,9 @@ public class MicDetection : MonoBehaviour
         using (StreamWriter writer = new StreamWriter(filePath))
         {
             writer.WriteLine($"# time, mic, volume");
-            foreach (var info in _detectedList)
+            foreach (Detection detection in _detectedList)
             {
-                writer.WriteLine($"{info.time:F2}, {info.mic}, {info.volume:F4}");
+                writer.WriteLine($"{detection.Timing :F2}, {detection.Mic}, {detection.Volume :F4}");
             }
         }
 

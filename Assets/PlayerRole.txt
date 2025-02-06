@@ -1,3 +1,0 @@
-Player1,  RED,    Heart,   マイク (Logi C615 HD WebCam)
-Player2,  MAGENTA,    Spade,   Mic2(Robot part)
-Player3,  BLUE,    Diamond,   Mic3(Robot part)

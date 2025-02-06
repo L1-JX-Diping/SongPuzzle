@@ -8,87 +8,59 @@ public class Calculation : MonoBehaviour
 {
     public TextMeshProUGUI _scoreDisplayText;
 
-    private Dictionary<string, string> _micColorDict = new Dictionary<string, string>(); // マイクと色の対応
-    private List<Part> _partInfoList = new List<Part>(); // 時刻と色・マイクの正解情報
+    private Data _data = new Data();
+
+    private Dictionary<string, Color> _micColorDict = new Dictionary<string, Color>(); // マイクと色の対応
+    //private List<Part> _partInfoList = new List<Part>(); // 時刻と色・マイクの正解情報
     private List<Detection> _detectionList = new List<Detection>(); // 時刻ごとの検出情報
+    private List<Part> _correctParts = new List<Part>();
 
     private int _totalScore = 0; // 合計スコア
-    private int _maxScore = 0;   // 最大スコア（100点満点換算用）
-
-    [System.Serializable]
-    public class Part
-    {
-        public float time;       // 時刻
-        public string color;     // 正解の色
-        public string mic;       // 正解のマイク名 ("Robot"含む)
-    }
-
-    [System.Serializable]
-    public class Detection
-    {
-        public float time;       // 時刻
-        public string mic;       // 検出されたマイク
-        public float volume;     // 検出された音量
-    }
+    //private int _maxScore = 0;   // 最大スコア (100点満点換算用)
 
     void Start()
     {
-        LoadMicColorInfo();
-        LoadCorrectPart();
+        LoadData();
+        
         LoadMicDetectionLog();
         CalculateScore();
     }
 
-    void LoadMicColorInfo()
+    private void LoadData()
     {
-        string[] lineList = Common.GetTXTFileLineList(FileName.PlayerRole);
+        _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
+        SetData();
+        SetCorrectPart();
+    }
 
-        foreach (string line in lineList)
+    void SetData()
+    {
+        /* Set _micColorDict */
+        List<Player> playerList = _data.Team.MemberList;
+
+        foreach (Player player in playerList)
         {
-            string[] parts = line.Split(',');
-            if (parts.Length == 3)
-            {
-                string color = parts[0].Trim();
-                string mic = parts[1].Trim();
-                _micColorDict[mic] = color;
-            }
+            _micColorDict[player.Role.Mic] = player.Role.Color;
         }
 
         Debug.Log("MicColorInfo loaded successfully.");
-    }
 
-    void LoadCorrectPart()
-    {
-        string[] lineList = Common.GetTXTFileLineList(FileName.CorrectPart);
+        /* Set correct parts */
+        List<Line> lyricsList = _data.Song.Lyrics;
 
-        foreach (string line in lineList)
+        foreach (Line line in lyricsList)
         {
-            string[] parts = line.Split(',');
-            if (parts.Length == 2 && float.TryParse(parts[0].Trim(), out float time))
+            foreach (Part part in line.PartList)
             {
-                string color = parts[1].Trim();
-                string mic = "Robot"; // デフォルトはRobot
-
-                // MicColorDictを基に対応するマイクを検索
-                foreach (var pair in _micColorDict)
-                {
-                    if (pair.Value == color)
-                    {
-                        mic = pair.Key;
-                        break;
-                    }
-                }
-
-                _partInfoList.Add(new Part 
-                { 
-                    time = time, 
-                    color = color, 
-                    mic = mic 
-                });
+                _correctParts.Add(part);
             }
         }
-
+        
         Debug.Log("PartLog loaded successfully.");
+    }
+
+    void SetCorrectPart()
+    {
     }
 
     void LoadMicDetectionLog()
@@ -106,9 +78,9 @@ public class Calculation : MonoBehaviour
                 string mic = parts[1].Trim();
                 _detectionList.Add(new Detection 
                 { 
-                    time = time, 
-                    mic = mic, 
-                    volume = volume 
+                    Timing = time, 
+                    Mic = mic, 
+                    Volume = volume 
                 });
             }
         }
@@ -119,12 +91,12 @@ public class Calculation : MonoBehaviour
     void CalculateScore()
     {
         _totalScore = 0;
-        _maxScore = _partInfoList.Count;
+        int maxScore = _correctParts.Count;
 
-        foreach (var part in _partInfoList)
+        foreach (var part in _correctParts)
         {
             // Robotパートは自動的に正解
-            if (part.mic == "Robot")
+            if (part.Player.Role.Mic == "Robot")
             {
                 _totalScore++;
                 continue;
@@ -134,9 +106,9 @@ public class Calculation : MonoBehaviour
             Detection maxDetection = null;
             foreach (Detection detection in _detectionList)
             {
-                if (Mathf.Approximately(detection.time, part.time))
+                if (Mathf.Approximately(detection.Timing, part.Timing))
                 {
-                    if (maxDetection == null || detection.volume > maxDetection.volume)
+                    if (maxDetection == null || detection.Volume > maxDetection.Volume)
                     {
                         maxDetection = detection;
                     }
@@ -144,15 +116,15 @@ public class Calculation : MonoBehaviour
             }
 
             // 最大音量マイクが正解と一致するか確認
-            if (maxDetection != null && maxDetection.mic == part.mic)
+            if (maxDetection != null && maxDetection.Mic == part.Player.Role.Mic)
             {
                 _totalScore++;
             }
         }
 
         // スコアを100点満点に換算
-        float percentageScore = (float)_totalScore / _maxScore * 100f;
-        Debug.Log($"Score: {_totalScore}/{_maxScore} ({percentageScore:F2}%)");
+        float percentageScore = (float)_totalScore / maxScore * 100f;
+        Debug.Log($"Score: {_totalScore}/{maxScore} ({percentageScore:F2}%)");
         DisplayScore(percentageScore);
     }
 
@@ -172,17 +144,4 @@ public class Calculation : MonoBehaviour
         }
     }
 
-    // アプリケーションを終了する処理
-    void OnApplicationQuit()
-    {
-        Debug.Log("アプリケーション終了処理を実行");
-
-#if UNITY_EDITOR
-        // エディタ上で実行を停止する（エディタ用）
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        // 実行ファイルの場合はアプリケーションを終了
-        Application.Quit();
-#endif
-    }
 }
