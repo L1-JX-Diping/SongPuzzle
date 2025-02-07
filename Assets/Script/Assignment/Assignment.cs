@@ -1,16 +1,14 @@
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.UI; // UI 扱うので
 using UnityEngine.SceneManagement; // Scene の切り替えしたい場合に必要な宣言
 
-public class Assignment : MonoBehaviour
+public class Assignment 
 {
     // access to game data
     Data _data = new Data();
     // 
     private List<string> _micList = new List<string>(); // 検出されたマイク名
-    private Dictionary<string, string> _avatarColorDict = new Dictionary<string, string>();
     // 候補となるアバター(今は順番に割り当て) // ***Update*** random 割り当てしなきゃ
     private List<string> _avatarList = new List<string> { "Heart", "Spade", "Diamond", "Club" }; // Heart, Spade, Diamond, Club の順で固定
     // to access game data
@@ -19,20 +17,22 @@ public class Assignment : MonoBehaviour
 
     void Start()
     {
+        //DoAssignment();
+    }
+
+    /// <summary>
+    /// assign role to players and save the data
+    /// </summary>
+    public void DoAssignment()
+    {
         // Get and Set game data registered in previous page from file
         LoadData();
 
         // color assignment 
         AssignRoleToPlayers();
 
-        // display role assignment on the screen
-        DisplayOnScreen();
-
         // Save Player role (name, color, avatar(mark),mic)
         SaveDataToFile();
-
-        // ボタンが押されたらこれを実行 Switch Scene
-        //GameObject.Find("ButtonStart").GetComponent<Button>().onClick.AddListener(ButtonClicked);
     }
 
     /// <summary>
@@ -52,78 +52,6 @@ public class Assignment : MonoBehaviour
         _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
         _playerCount = _data.Team.CountMembers;
         _playerList = _data.Team.MemberList; // already include players' name
-    }
-
-    /// <summary>
-    /// If button clicked, switch scene
-    /// </summary>
-    void ButtonClicked()
-    {
-        // ゲーム画面へ GO
-        SwitchScene();
-    }
-
-    void SwitchScene()
-    {
-        // Gameシーン "DisplayLyrics" を開く
-        SceneManager.LoadScene("DisplayLyrics");
-    }
-
-    private void DisplayOnScreen()
-    {
-        /* display mic(assignment) information */
-        for (int index = 0; index < _playerCount; index++)
-        {
-            DisplayAssignment(index);
-        }
-    }
-
-    /// <summary>
-    /// Display to screen (index: players' index)
-    /// </summary>
-    /// <param name="index"></param>
-    private void DisplayAssignment(int index)
-    {
-        string objName = "";
-        string avatarName = "";
-        Text micColorField;
-        Text micNameField;
-
-        // Default: Play as Anoymous
-        int playerNo = index + 1; // playerNo: from 1, index: from 0
-
-        // Set text field to display assignment information
-        objName = "Color" + playerNo.ToString();
-        avatarName = "Avatar" + playerNo.ToString();
-        micColorField = GameObject.Find(objName).GetComponent<Text>();
-
-        // Set text field to display assignment information
-        objName = "MicName" + playerNo.ToString();
-        micNameField = GameObject.Find(objName).GetComponent<Text>();
-
-        if (micColorField != null && micNameField != null)
-        {
-            // Get and Set assignment information for this player
-            Player player = _playerList[index];
-            Role role = player.Role;
-            Color color = role.Color;
-            string colorName = Common.ToColorName(color);
-
-            // Display mic DEVICE name
-            micNameField.text = player.Name + ": \n [mic]: " + role.Mic;
-
-            // Display assigned COLOR name
-            micColorField.text = colorName; // display text (color name)
-            micColorField.color = color; // Change text color
-
-            // Change AVATAR color displayed on the screen
-            ReflectToAvatar(avatarName, color);
-            if (!_avatarColorDict.ContainsKey(colorName)) _avatarColorDict[colorName] = _avatarList[index];
-        }
-        else
-        {
-            Debug.LogError($"Textbox {micColorField} or {micNameField} is not assigned.");
-        }
     }
 
     /// <summary>
@@ -148,10 +76,16 @@ public class Assignment : MonoBehaviour
         // Set player role
         for (int i = 0; i < _playerCount; i++)
         {
-            Role role = new Role();
-            role.Color = colors[i];
-            role.Avatar = _avatarList[i];
-            role.Mic = _micList[i];
+            Role role = new Role() { 
+                Color = colors[i],
+                Avatar = _avatarList[i],
+                Mic = _micList[i]
+            };
+            // if REAL player exist
+            if (!_micList[i].Contains("Robot"))
+            {
+                role.IsRobot = false;
+            }
 
             // add to player list
             _playerList[i].Role = role;
@@ -174,7 +108,7 @@ public class Assignment : MonoBehaviour
 
             for (int i = 0; i < _playerCount; i++)
             {
-                string micName = "Mic" + (i + 1).ToString() + "(Just singing)";
+                string micName = "Mic" + (i + 1).ToString() + "(Robot part)";
                 _micList.Add(micName);
             }
 
@@ -214,40 +148,6 @@ public class Assignment : MonoBehaviour
             _micList.Add(micName);
         }
         Debug.Log($"There are {_playerCount} players and {_micList.Count} mics are assigned to each player.");
-    }
-
-    /// <summary>
-    /// Set Color to Avatar
-    /// </summary>
-    /// <param name="avatarName"></param>
-    /// <param name="color"></param>
-    void ReflectToAvatar(string avatarName, Color color)
-    {
-        // avatarName = "Avatar1" 
-        // Canvas内の objName オブジェクトを探す
-        GameObject avatarObject = GameObject.Find(avatarName);
-
-        // オブジェクトが見つかった場合
-        if (avatarObject != null)
-        {
-            // Imageコンポーネントを取得
-            Image avatarImage = avatarObject.GetComponent<Image>();
-
-            if (avatarImage != null)
-            {
-                // ImageのColorプロパティに色を設定
-                avatarImage.color = color;
-                Debug.Log($"Color {Common.ToColorName(color)} applied to {avatarName}.");
-            }
-            else
-            {
-                Debug.LogError($"{avatarName} does not have an Image component.");
-            }
-        }
-        else
-        {
-            Debug.LogError($"{avatarName} object not found in the scene.");
-        }
     }
 
     /// <summary>

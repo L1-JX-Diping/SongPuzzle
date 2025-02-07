@@ -1,5 +1,0 @@
-# time, mic, volume
-4.00, マイク配列 (Realtek(R) Audio), 0.0110
-7.17, マイク配列 (Realtek(R) Audio), 0.0315
-7.50, マイク配列 (Realtek(R) Audio), 0.0219
-10.17, マイク配列 (Realtek(R) Audio), 0.0165

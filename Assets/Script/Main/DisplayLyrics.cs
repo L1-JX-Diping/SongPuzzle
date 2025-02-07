@@ -65,16 +65,16 @@ public class DisplayLyrics : MonoBehaviour
     {
         SceneManager.LoadScene("Score");
 
-        if (true)
-        {
-            // if finish to play this song, swith scene to "Score"
-            SceneManager.LoadScene("Score");
-        }
-        else
-        {
-            // 
-            SceneManager.LoadScene("Home");
-        }
+        //if (true)
+        //{
+        //    // if finish to play this song, swith scene to "Score"
+        //    SceneManager.LoadScene("Score");
+        //}
+        //else
+        //{
+        //    // 
+        //    SceneManager.LoadScene("Home");
+        //}
     }
 
     /// <summary>

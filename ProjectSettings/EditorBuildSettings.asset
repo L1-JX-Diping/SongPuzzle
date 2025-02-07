@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Score.unity
     guid: 6b62e8d2a9d237249b95a7a4ef85299c
+  - enabled: 1
+    path: Assets/Scenes/ShowDivision.unity
+    guid: b640859e97513094ab0da096af5bcccf
   m_configObjects: {}

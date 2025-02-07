@@ -1220,7 +1220,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1907509683}
-  - component: {fileID: 1907509682}
   - component: {fileID: 1907509684}
   m_Layer: 0
   m_Name: Script
@@ -1229,19 +1228,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1907509682
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1907509681}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b9db9304dee02214489d384d2df4adba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scoreDisplayText: {fileID: 2067037623}
 --- !u!4 &1907509683
 Transform:
   m_ObjectHideFlags: 0
@@ -1269,7 +1255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d069ae48e7cd3424c900a932d32c4a5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scoreDisplayText: {fileID: 2067037623}
+  _scoreTextField: {fileID: 2067037623}
 --- !u!1 &1923903759
 GameObject:
   m_ObjectHideFlags: 0

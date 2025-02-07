@@ -5,7 +5,7 @@ public class Detection
     private string _mic; // 検出されたマイク
     private float _volume; // 検出された音量
 
-    public float Timing { get => _timing; set => _timing = value; }
+    public float Time { get => _timing; set => _timing = value; }
 
     public string Mic { get => _mic; set => _mic = value; }
 

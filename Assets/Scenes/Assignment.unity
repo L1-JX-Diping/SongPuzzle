@@ -192,7 +192,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: COLOR
+  m_Text: No color
 --- !u!222 &32922452
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -656,9 +656,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Microphone 3
-
-'
+  m_Text: No player
 --- !u!222 &697671242
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -831,7 +829,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Microphone 2
+  m_Text: No player
 --- !u!222 &872306348
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1078,9 +1076,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1295110068}
-  - component: {fileID: 1295110069}
   - component: {fileID: 1295110071}
-  - component: {fileID: 1295110072}
+  - component: {fileID: 1295110073}
   m_Layer: 5
   m_Name: Scripts
   m_TagString: Untagged
@@ -1107,20 +1104,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1295110069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1295110067}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d05f67093e6ad640bfe15eff806c725, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _textboxMic1Color: {fileID: 32922451}
-  _textboxMic2Color: {fileID: 1715795250}
 --- !u!114 &1295110071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1133,7 +1116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc62149a9f3e98b40a498fed53c48c6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1295110072
+--- !u!114 &1295110073
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1142,7 +1125,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1295110067}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3d80ab5a0fa8bd748b024523824b8234, type: 3}
+  m_Script: {fileID: 11500000, guid: 483855d4d5efd6c40b077fd03c828733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1435241268
@@ -1215,7 +1198,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: COLOR
+  m_Text: No color
 --- !u!222 &1435241271
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1516,7 +1499,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.4867924, g: 0.4867924, b: 0.4867924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1611,7 +1594,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Microphone 1
+  m_Text: No player
 --- !u!222 &1523633386
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1903,7 +1886,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: COLOR
+  m_Text: No color
 --- !u!222 &1715795251
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2158,7 +2141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.4867924, g: 0.4867924, b: 0.4867924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2233,7 +2216,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 1, a: 1}
+  m_Color: {r: 0.4867924, g: 0.4867924, b: 0.4867924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

@@ -52,8 +52,8 @@ public class MicDetection : MonoBehaviour
 
     private void ButtonClicked()
     {
-        // 
-        SaveMicDetectionLog();
+        // Save mic detection log (List<Detection>)
+        SaveLogToXML(); // List of Detection(time, mic, volume)
 
         //
         SceneManager.LoadScene("Score");
@@ -84,7 +84,7 @@ public class MicDetection : MonoBehaviour
                         Debug.Log($"Mic detected from {micName} at {detectionTime:F2} seconds, Volume: {volume:F4}");
                         _detectedList.Add(new Detection
                         {
-                            Timing = detectionTime,
+                            Time = detectionTime,
                             Mic = micName,
                             Volume = volume
                         });
@@ -93,6 +93,8 @@ public class MicDetection : MonoBehaviour
             }
             _index++;
         }
+        // 逐一保存
+        SaveLogToXML();
     }
 
     /// <summary>
@@ -119,6 +121,11 @@ public class MicDetection : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="micClip"></param>
+    /// <returns></returns>
     private float GetVolumeLevel(AudioClip micClip)
     {
         // サンプルデータを取得
@@ -138,20 +145,28 @@ public class MicDetection : MonoBehaviour
         return maxAmplitude;
     }
 
-    private void SaveMicDetectionLog()
+    /// <summary>
+    /// Save detection log data to xml file
+    /// </summary>
+    public void SaveLogToXML()
     {
-        // 音声検知時間をファイルに記録
-        string filePath = Path.Combine(Application.dataPath, FileName.MicDitection);
-        using (StreamWriter writer = new StreamWriter(filePath))
-        {
-            writer.WriteLine($"# time, mic, volume");
-            foreach (Detection detection in _detectedList)
-            {
-                writer.WriteLine($"{detection.Timing :F2}, {detection.Mic}, {detection.Volume :F4}");
-            }
-        }
-
-        Debug.Log($"Mic detection log saved to: {filePath}");
+        Common.ExportToXml(_detectedList, FileName.XmlMicLog);
     }
+
+    //private void SaveMicDetectionLog()
+    //{
+    //    // 音声検知時間をファイルに記録
+    //    string filePath = Path.Combine(Application.dataPath, FileName.MicDitection);
+    //    using (StreamWriter writer = new StreamWriter(filePath))
+    //    {
+    //        writer.WriteLine($"# time, mic, volume");
+    //        foreach (Detection detection in _detectedList)
+    //        {
+    //            writer.WriteLine($"{detection.Timing :F2}, {detection.Mic}, {detection.Volume :F4}");
+    //        }
+    //    }
+
+    //    Debug.Log($"Mic detection log saved to: {filePath}");
+    //}
 
 }

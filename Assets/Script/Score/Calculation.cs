@@ -6,36 +6,55 @@ using UnityEngine;
 
 public class Calculation : MonoBehaviour
 {
-    public TextMeshProUGUI _scoreDisplayText;
+    // 
+    public TextMeshProUGUI _scoreTextField;
 
     private Data _data = new Data();
-
     private Dictionary<string, Color> _micColorDict = new Dictionary<string, Color>(); // マイクと色の対応
-    //private List<Part> _partInfoList = new List<Part>(); // 時刻と色・マイクの正解情報
     private List<Detection> _detectionList = new List<Detection>(); // 時刻ごとの検出情報
-    private List<Part> _correctParts = new List<Part>();
+    //private List<Part> _correctParts = new List<Part>();
 
-    private int _totalScore = 0; // 合計スコア
-    //private int _maxScore = 0;   // 最大スコア (100点満点換算用)
+    private float _score = 0f;
+    // 歌い出し許容誤差
+    private float _threshold = 0.3f; // change mode
 
     void Start()
     {
+        // init 
         LoadData();
-        
-        LoadMicDetectionLog();
+        ReformData();
+
         CalculateScore();
+        
+        DisplayScore(_score);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private void LoadData()
     {
         _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
-        SetData();
-        SetCorrectPart();
+        _detectionList = (List<Detection>)Common.LoadXml(_detectionList.GetType(), FileName.XmlMicLog);
     }
 
-    void SetData()
+    /// <summary>
+    /// 
+    /// </summary>
+    void ReformData()
     {
         /* Set _micColorDict */
+        MakeMicColorDict();
+
+        /* Set correct parts */
+        GetCorrectPartList();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private void MakeMicColorDict()
+    {
         List<Player> playerList = _data.Team.MemberList;
 
         foreach (Player player in playerList)
@@ -44,61 +63,43 @@ public class Calculation : MonoBehaviour
         }
 
         Debug.Log("MicColorInfo loaded successfully.");
+    }
 
-        /* Set correct parts */
+    /// <summary>
+    /// 
+    /// </summary>
+    private List<Part> GetCorrectPartList()
+    {
         List<Line> lyricsList = _data.Song.Lyrics;
+        List<Part> correctParts = new List<Part>();
 
         foreach (Line line in lyricsList)
         {
             foreach (Part part in line.PartList)
             {
-                _correctParts.Add(part);
+                correctParts.Add(part);
             }
         }
-        
+
         Debug.Log("PartLog loaded successfully.");
+
+        return correctParts;
     }
 
-    void SetCorrectPart()
-    {
-    }
-
-    void LoadMicDetectionLog()
-    {
-        string[] lineList = Common.GetTXTFileLineList(FileName.MicDitection);
-
-        foreach (string line in lineList)
-        {
-            if (line.StartsWith("#")) continue; // コメント行をスキップ
-
-            string[] parts = line.Split(',');
-            if (parts.Length == 3 && float.TryParse(parts[0].Trim(), out float time) &&
-                float.TryParse(parts[2].Trim(), out float volume))
-            {
-                string mic = parts[1].Trim();
-                _detectionList.Add(new Detection 
-                { 
-                    Timing = time, 
-                    Mic = mic, 
-                    Volume = volume 
-                });
-            }
-        }
-
-        Debug.Log("MicDetectionLog loaded successfully.");
-    }
-
+    /// <summary>
+    /// 
+    /// </summary>
     void CalculateScore()
     {
-        _totalScore = 0;
-        int maxScore = _correctParts.Count;
+        List<Part> correctParts = GetCorrectPartList();
+        int totalScore = 0;
 
-        foreach (var part in _correctParts)
+        foreach (var part in correctParts)
         {
-            // Robotパートは自動的に正解
-            if (part.Player.Role.Mic == "Robot")
+            // Robot パートは自動的に正解
+            if (part.Player.Role.IsRobot == true)
             {
-                _totalScore++;
+                totalScore++;
                 continue;
             }
 
@@ -106,7 +107,9 @@ public class Calculation : MonoBehaviour
             Detection maxDetection = null;
             foreach (Detection detection in _detectionList)
             {
-                if (Mathf.Approximately(detection.Timing, part.Timing))
+                // comparing time
+                // using Abs method instead of the method "Mathf.Approximately(time1, time2)"
+                if (Mathf.Abs(part.Timing - detection.Time) < _threshold)
                 {
                     if (maxDetection == null || detection.Volume > maxDetection.Volume)
                     {
@@ -118,29 +121,33 @@ public class Calculation : MonoBehaviour
             // 最大音量マイクが正解と一致するか確認
             if (maxDetection != null && maxDetection.Mic == part.Player.Role.Mic)
             {
-                _totalScore++;
+                totalScore++;
             }
         }
 
-        // スコアを100点満点に換算
-        float percentageScore = (float)_totalScore / maxScore * 100f;
-        Debug.Log($"Score: {_totalScore}/{maxScore} ({percentageScore:F2}%)");
-        DisplayScore(percentageScore);
+        // score format: x / 100
+        int maxScore = correctParts.Count;
+        _score = (float)totalScore / maxScore * 100f;
+        Debug.Log($"Score: {totalScore}/{maxScore} ({_score:F2}%)");
     }
 
-    void DisplayScore(float result)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="score"></param>
+    private void DisplayScore(float score)
     {
         string displayText = "";
-        //float result = Convert.ToSingle(sum) / 300 * 100;
-        displayText += $"{result:00.00}\n";
+        //float score = Convert.ToSingle(sum) / 300 * 100;
+        displayText += $"{score:00.00}\n";
 
-        if (_scoreDisplayText != null)
+        if (_scoreTextField != null)
         {
-            _scoreDisplayText.text = displayText;
+            _scoreTextField.text = displayText;
         }
         else
         {
-            Debug.LogError("ScoreDisplayText is not assigned in the inspector.");
+            Debug.LogError("Text field is not assigned in the inspector.");
         }
     }
 

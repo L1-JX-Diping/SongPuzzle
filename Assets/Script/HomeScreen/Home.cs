@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI; // UI 扱うので
 using UnityEngine.SceneManagement; // Scene の切り替えしたい場合に必要な宣言
 
-public class HomeSceneManager : MonoBehaviour
+public class Home : MonoBehaviour
 {
     /* public な変数 (Inspector でアタッチが必要) */
     // シーン内の Dropdown をアタッチ (Visual Studio の ComboBox みたいなもの)
@@ -23,6 +23,7 @@ public class HomeSceneManager : MonoBehaviour
 
         // ボタンが押されたらこれを実行
         GameObject.Find("ButtonNext").GetComponent<Button>().onClick.AddListener(ButtonClicked);
+        GameObject.Find("ViewSample").GetComponent<Button>().onClick.AddListener(ShowDivision);
     }
 
     private void SetDropdown()
@@ -97,12 +98,20 @@ public class HomeSceneManager : MonoBehaviour
     /// </summary>
     private void ButtonClicked()
     {
-        // Game する歌の名前と人数を保存
+        // Play する歌の名前と人数を保存
         SaveDataToXML();
 
         // 選択された歌が Birthday song なら準備できてるのでゲーム画面へ GO
         // それ以外の歌なら準備中・・・画面へ go
         SwitchScene();
+    }
+
+    private void ShowDivision()
+    {
+        // Play する歌の名前と人数を保存
+        SaveDataToXML();
+
+        SceneManager.LoadScene("ShowDivision");
     }
 
     private void SwitchScene()
