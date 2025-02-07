@@ -115,6 +115,9 @@ public class DisplayLyrics : MonoBehaviour
         ReflectOnScreen("Club", Color.gray);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private void UpdateLyricsDisplay()
     {
         // 真ん中の行を更新するためのインデックス

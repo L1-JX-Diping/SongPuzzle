@@ -448,6 +448,7 @@ GameObject:
   m_Component:
   - component: {fileID: 58334685}
   - component: {fileID: 58334686}
+  - component: {fileID: 58334687}
   m_Layer: 5
   m_Name: Scripts
   m_TagString: Untagged
@@ -488,6 +489,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _dropdownSongTitle: {fileID: 1907246429}
   _dropdownPlayerCount: {fileID: 1251042538}
+--- !u!114 &58334687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58334684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52676dd98756adc45b53014d9180aa5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &123122096
 GameObject:
   m_ObjectHideFlags: 0

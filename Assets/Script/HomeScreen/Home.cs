@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI; // UI 扱うので
-using UnityEngine.SceneManagement; // Scene の切り替えしたい場合に必要な宣言
+using UnityEngine.SceneManagement;
+using System; // Scene の切り替えしたい場合に必要な宣言
 
 public class Home : MonoBehaviour
 {
@@ -19,33 +20,35 @@ public class Home : MonoBehaviour
         // Register
         // At the start of the game, if a player has not registered, they can select 'Play as Anonymous'.
 
-        //Dropdown _dropdownSongTitle = GameObject.Find("Dropdown-SelectSong").GetComponent<Dropdown>();
-
         // ボタンが押されたらこれを実行
         GameObject.Find("ButtonNext").GetComponent<Button>().onClick.AddListener(ButtonClicked);
         GameObject.Find("ViewSample").GetComponent<Button>().onClick.AddListener(ShowDivision);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     private void SetDropdown()
-    {
-        // ファイルパスを取得
-        string filePath = Path.Combine(Application.dataPath, FileName.SongTitleList);
+    { 
+        List<Song> songs = new List<Song>();
+        songs = (List<Song>)Common.LoadXml(songs.GetType(), FileName.XmlSong);
+        SetDropdownSongTitles(songs);
 
-        // ファイルを読み込み、Dropdownに追加
-        if (File.Exists(filePath))
-        {
-            string[] songList = File.ReadAllLines(filePath); // ファイル内容を行単位で読み込む
-            SetDropdownSongTitles(songList); // Dropdownに追加
-            SetDropdownPlayerCount();
-
-            Debug.Log($"Loaded {songList.Length} songs from {filePath}");
-        }
-        else
-        {
-            Debug.LogError($"File not found: {filePath}");
-        }
+        SetDropdownPlayerCount();
     }
-    
+
+    //private void SetDropdown()
+    //{
+    //    string[] songList = Common.GetTXTFileLineList(FileName.SongTitleList);
+
+    //    // Set GameObject Dropdown 
+    //    SetDropdownSongTitles(songList); 
+    //    SetDropdownPlayerCount();
+    //}
+
+    /// <summary>
+    /// 
+    /// </summary>
     private void SaveDataToXML()
     {
         Song song = new Song();
@@ -143,6 +146,10 @@ public class Home : MonoBehaviour
         return songTitle;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     string GetPlayerCount()
     {
         // 現在選択されているアイテムのインデックス
@@ -155,6 +162,34 @@ public class Home : MonoBehaviour
         return count;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="songs"></param>
+    void SetDropdownSongTitles(List<Song> songs)
+    {
+        // Dropdownの既存の項目をクリア
+        _dropdownSongTitle.options.Clear();
+
+        // 新しい項目を追加
+        foreach (Song song in songs)
+        {
+            string title = song.Title;
+            _dropdownSongTitle.options.Add(new Dropdown.OptionData(title));
+        }
+
+        // 初期値を最初の項目に設定
+        /* ***Update*** value selected latest before back to home sence */
+        _dropdownSongTitle.value = 0;
+
+        // Dropdownを更新
+        _dropdownSongTitle.RefreshShownValue();
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="titles"></param>
     void SetDropdownSongTitles(string[] titles)
     {
         // Dropdownの既存の項目をクリア
@@ -172,6 +207,10 @@ public class Home : MonoBehaviour
         // Dropdownを更新
         _dropdownSongTitle.RefreshShownValue();
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
     void SetDropdownPlayerCount()
     {
         // Dropdownの既存の項目をクリア

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 /// <summary>
 /// 情報記録ファイルの管理を行うクラス
 /// </summary>
@@ -11,6 +9,7 @@ public class FileName
     // XML
     private static string _xmlGameData = "GameData.xml";
     private static string _xmlMicLog = "MicLog.xml";
+    private static string _xmlSong = "Song.xml";
 
     /// <summary>
     /// [format]
@@ -25,5 +24,13 @@ public class FileName
     /// </summary>
     public static string XmlGameData { get => _xmlGameData; set => _xmlGameData = value; }
 
+    /// <summary>
+    /// Log of the detected microphones (include: time, mic, volume)
+    /// </summary>
     public static string XmlMicLog { get => _xmlMicLog; set => _xmlMicLog = value; }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public static string XmlSong { get => _xmlSong; set => _xmlSong = value; }
 }

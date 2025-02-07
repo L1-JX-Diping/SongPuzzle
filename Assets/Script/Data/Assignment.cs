@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI; // UI 扱うので
-using UnityEngine.SceneManagement; // Scene の切り替えしたい場合に必要な宣言
 
 public class Assignment 
 {

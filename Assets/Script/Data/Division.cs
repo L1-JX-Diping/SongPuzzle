@@ -15,13 +15,16 @@ public class Division
     // for loading from file
     private List<Player> _playerList = new List<Player>();
     // for creating and exporting to file
-    private List<Line> _lyricsList = new List<Line>(); // lyrics information 
+    private List<Line> _lyrics = new List<Line>(); // lyrics information 
     // 
     private float _clock = 3f; // Second per Beat
-    private float _beat = 4; // 何拍子か？ Birthday song は 3 拍子
+    private int _beat = 4; // 何拍子か？ Birthday song は 3 拍子
     private string _eofText = "GAME END.";
 
-    public void DoDivision()
+    /// <summary>
+    /// Divide lyrics into parts randomly and Save the data after dividing
+    /// </summary>
+    public List<Line> DoDivision()
     {
         // initiallize game data such as _playerRole
         LoadData();
@@ -30,18 +33,14 @@ public class Division
 
         // Save information to files
         SaveData();
+
+        return _lyrics;
     }
 
-    // Start is called before the first frame update
+    //// Start is called before the first frame update
     //void Start()
     //{
-    //    // initiallize game data such as _playerRole
-    //    LoadGameData();
-
-    //    LoadLyricsFile(); // Load lyrics 
-
-    //    // Save information to files
-    //    SaveData();
+    //    DoDivision();
     //}
 
     // Update is called once per frame
@@ -52,7 +51,7 @@ public class Division
     /// </summary>
     private void SaveData()
     {
-        _data.Song.Lyrics = _lyricsList;
+        _data.Song.Lyrics = _lyrics;
         Common.ExportToXml(_data, FileName.XmlGameData); // update song lirics division
     }
 
@@ -86,21 +85,21 @@ public class Division
 
     private void DebugToConsole()
     {
-        Debug.Log("_lyricsList: \n");
-        foreach (Line line in _lyricsList)
+        Debug.Log("Lyrics: \n");
+        foreach (Line line in _lyrics)
         {
             Debug.Log(line.Timing + ", " + line.Text);
         }
 
-        Debug.Log($"Loaded {_lyricsList.Count} lyrics from {_lyricsFileName}");
+        Debug.Log($"Loaded {_lyrics.Count} lyrics from {_lyricsFileName}");
     }
 
-    private void CreateLyricsList(string[] lyricsLineList)
+    private void CreateLyricsList(string[] lineList)
     {
         float lineTiming = 0f;
 
         // 前奏 intro 部分用
-        _lyricsList.Add(new Line 
+        _lyrics.Add(new Line 
         { 
             Timing = 0.0f, 
             Text = "" 
@@ -108,9 +107,9 @@ public class Division
 
         // meta info part (1行目) の処理
         // bpm と intro を取得
-        if (lyricsLineList.Length > 0 && lyricsLineList[0].StartsWith("#"))
+        if (lineList.Length > 0 && lineList[0].StartsWith("#"))
         {
-            string metaLine = lyricsLineList[0];
+            string metaLine = lineList[0];
             // 曲の speed 情報
             int bpm = ParseMetaLine(metaLine, "bpm");
             _beat = ParseMetaLine(metaLine, "beat");
@@ -128,9 +127,9 @@ public class Division
 
         // lyrics part (2 行目以降) の処理
         // 歌詞の表示開始時間情報付き lyricsList を作成
-        for (int i = 1; i < lyricsLineList.Length; i++)
+        for (int i = 1; i < lineList.Length; i++)
         {
-            string lyricsInfo = lyricsLineList[i];
+            string lyricsInfo = lineList[i];
             // Line ごとに更新
             List<int> ratioList = new List<int>();
 
@@ -163,7 +162,7 @@ public class Division
             List<Part> partInfoList = SetPartListForThisLine(ratioList, barCount, lyrics, lineTiming);
 
             // lyricsList に追加
-            _lyricsList.Add(new Line
+            _lyrics.Add(new Line
             {
                 Timing = lineTiming,
                 Text = lyrics,
@@ -176,12 +175,12 @@ public class Division
 
         // 終了メッセージを追加
         //float endTime = lyricsStartTime + lines.Length * clock;
-        _lyricsList.Add(new Line
+        _lyrics.Add(new Line
         {
             Timing = lineTiming,
             Text = _eofText
         });
-        _lyricsList.Add(new Line
+        _lyrics.Add(new Line
         {
             Timing = lineTiming + 2f,
             Text = ""

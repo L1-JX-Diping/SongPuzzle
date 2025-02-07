@@ -2,14 +2,358 @@
 <Data xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Song>
     <Title>Birthday Song</Title>
-    <Clock>3</Clock>
     <Beat>4</Beat>
-    <Bpm>0</Bpm>
-    <Lyrics />
+    <BPM>60</BPM>
+    <Lyrics>
+      <Line>
+        <Timing>0</Timing>
+        <Text />
+        <PartList />
+      </Line>
+      <Line>
+        <Timing>4</Timing>
+        <Text>Happy birthday to you</Text>
+        <PartList>
+          <Part>
+            <Timing>4</Timing>
+            <Word>Happy</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player2</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Spade</Avatar>
+                <Mic>Mic2(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>4.16666651</Timing>
+            <Word>birthday</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player2</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Spade</Avatar>
+                <Mic>Mic2(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>4.5</Timing>
+            <Word>to</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player3</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>0</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Diamond</Avatar>
+                <Mic>Mic3(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>4.66666651</Timing>
+            <Word>you</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player3</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>0</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Diamond</Avatar>
+                <Mic>Mic3(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+        </PartList>
+      </Line>
+      <Line>
+        <Timing>7</Timing>
+        <Text>Happy birthday to you</Text>
+        <PartList>
+          <Part>
+            <Timing>7</Timing>
+            <Word>Happy</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player1</Name>
+              <Role>
+                <Color>
+                  <r>1</r>
+                  <g>0</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Heart</Avatar>
+                <Mic>Mic1(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>7.16666651</Timing>
+            <Word>birthday</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player1</Name>
+              <Role>
+                <Color>
+                  <r>1</r>
+                  <g>0</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Heart</Avatar>
+                <Mic>Mic1(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>7.5</Timing>
+            <Word>to</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player3</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>0</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Diamond</Avatar>
+                <Mic>Mic3(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>7.66666651</Timing>
+            <Word>you</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player2</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Spade</Avatar>
+                <Mic>Mic2(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+        </PartList>
+      </Line>
+      <Line>
+        <Timing>10</Timing>
+        <Text>Happy birthday dear Lily</Text>
+        <PartList>
+          <Part>
+            <Timing>10</Timing>
+            <Word>Happy</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player1</Name>
+              <Role>
+                <Color>
+                  <r>1</r>
+                  <g>0</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Heart</Avatar>
+                <Mic>Mic1(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>10.166667</Timing>
+            <Word>birthday</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player3</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>0</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Diamond</Avatar>
+                <Mic>Mic3(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>10.5</Timing>
+            <Word>dear</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player2</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Spade</Avatar>
+                <Mic>Mic2(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>10.666667</Timing>
+            <Word>Lily</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player3</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>0</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Diamond</Avatar>
+                <Mic>Mic3(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+        </PartList>
+      </Line>
+      <Line>
+        <Timing>13</Timing>
+        <Text>Happy birthday to you</Text>
+        <PartList>
+          <Part>
+            <Timing>13</Timing>
+            <Word>Happy</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player2</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Spade</Avatar>
+                <Mic>Mic2(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>13.166667</Timing>
+            <Word>birthday</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player1</Name>
+              <Role>
+                <Color>
+                  <r>1</r>
+                  <g>0</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Heart</Avatar>
+                <Mic>Mic1(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>13.5</Timing>
+            <Word>to</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player1</Name>
+              <Role>
+                <Color>
+                  <r>1</r>
+                  <g>0</g>
+                  <b>1</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Heart</Avatar>
+                <Mic>Mic1(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+          <Part>
+            <Timing>13.666667</Timing>
+            <Word>you</Word>
+            <Player>
+              <Id>0</Id>
+              <Name>Player3</Name>
+              <Role>
+                <Color>
+                  <r>0</r>
+                  <g>1</g>
+                  <b>0</b>
+                  <a>1</a>
+                </Color>
+                <Avatar>Diamond</Avatar>
+                <Mic>Mic3(Robot part)</Mic>
+                <IsRobot>true</IsRobot>
+              </Role>
+            </Player>
+          </Part>
+        </PartList>
+      </Line>
+      <Line>
+        <Timing>16</Timing>
+        <Text>GAME END.</Text>
+        <PartList />
+      </Line>
+      <Line>
+        <Timing>18</Timing>
+        <Text />
+        <PartList />
+      </Line>
+    </Lyrics>
+    <Intro>0</Intro>
   </Song>
   <Team>
     <ID>0</ID>
-    <CountMembers>1</CountMembers>
+    <CountMembers>3</CountMembers>
     <MemberList>
       <Player>
         <Id>0</Id>
@@ -17,12 +361,42 @@
         <Role>
           <Color>
             <r>1</r>
-            <g>0.921568632</g>
-            <b>0.0156862754</b>
+            <g>0</g>
+            <b>1</b>
             <a>1</a>
           </Color>
           <Avatar>Heart</Avatar>
           <Mic>Mic1(Robot part)</Mic>
+          <IsRobot>true</IsRobot>
+        </Role>
+      </Player>
+      <Player>
+        <Id>0</Id>
+        <Name>Player2</Name>
+        <Role>
+          <Color>
+            <r>0</r>
+            <g>1</g>
+            <b>1</b>
+            <a>1</a>
+          </Color>
+          <Avatar>Spade</Avatar>
+          <Mic>Mic2(Robot part)</Mic>
+          <IsRobot>true</IsRobot>
+        </Role>
+      </Player>
+      <Player>
+        <Id>0</Id>
+        <Name>Player3</Name>
+        <Role>
+          <Color>
+            <r>0</r>
+            <g>1</g>
+            <b>0</b>
+            <a>1</a>
+          </Color>
+          <Avatar>Diamond</Avatar>
+          <Mic>Mic3(Robot part)</Mic>
           <IsRobot>true</IsRobot>
         </Role>
       </Player>

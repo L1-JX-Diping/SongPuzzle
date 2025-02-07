@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfSong xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Song>
+    <Title>Birthday Song</Title>
+    <Beat>3</Beat>
+    <BPM>120</BPM>
+    <Intro>8</Intro>
+  </Song>
+  <Song>
+    <Title>Huyu no Hanaashi 冬のはなし</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>ABC Song</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Xmas Song</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Jingle bells</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Twinkle, Twinkle, Little Star</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Let it go</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Edelweiss</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>One Call Away</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>I Don't Think That I Like Her</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Blank Space</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>It's my life</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Santa tell me</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Love Is Everything</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Fly Me To The Moon</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Shake It Off</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>Symphony</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>moon river</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>call me maybe</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>top of the world</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title>stand by me</Title>
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title />
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+  <Song>
+    <Title />
+    <Beat>4</Beat>
+    <BPM>60</BPM>
+    <Intro>0</Intro>
+  </Song>
+</ArrayOfSong>

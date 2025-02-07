@@ -18,11 +18,11 @@ public class ShowSample : MonoBehaviour
 
         // part division
         Division division = new Division();
-        division.DoDivision();
+        List<Line> lyrics = division.DoDivision();
 
         // load lyrics division data after lyrics divided into parts
         LoadData();
-        List<Line> lyrics = _data.Song.Lyrics;
+        //List<Line> lyrics = _data.Song.Lyrics;
 
         // Display the result (not in scroll, whole lyrics will appear at the same time)
         DisplayWholeLyrics(lyrics);

@@ -153,20 +153,4 @@ public class MicDetection : MonoBehaviour
         Common.ExportToXml(_detectedList, FileName.XmlMicLog);
     }
 
-    //private void SaveMicDetectionLog()
-    //{
-    //    // 音声検知時間をファイルに記録
-    //    string filePath = Path.Combine(Application.dataPath, FileName.MicDitection);
-    //    using (StreamWriter writer = new StreamWriter(filePath))
-    //    {
-    //        writer.WriteLine($"# time, mic, volume");
-    //        foreach (Detection detection in _detectedList)
-    //        {
-    //            writer.WriteLine($"{detection.Timing :F2}, {detection.Mic}, {detection.Volume :F4}");
-    //        }
-    //    }
-
-    //    Debug.Log($"Mic detection log saved to: {filePath}");
-    //}
-
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityEngine.UI; // UI ˆµ‚¤‚Ì‚Å
+using UnityEngine.SceneManagement; // Scene ‚ÌØ‚è‘Ö‚¦‚µ‚½‚¢ê‡‚É•K—v‚ÈéŒ¾
 
 /// <summary>
 /// Move from Assignment class 
