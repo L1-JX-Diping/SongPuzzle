@@ -30,21 +30,14 @@ public class Home : MonoBehaviour
     /// </summary>
     private void SetDropdown()
     { 
+        //string[] songList = Common.GetTXTFileLineList(FileName.SongTitleList);
+
         List<Song> songs = new List<Song>();
         songs = (List<Song>)Common.LoadXml(songs.GetType(), FileName.XmlSong);
         SetDropdownSongTitles(songs);
 
         SetDropdownPlayerCount();
     }
-
-    //private void SetDropdown()
-    //{
-    //    string[] songList = Common.GetTXTFileLineList(FileName.SongTitleList);
-
-    //    // Set GameObject Dropdown 
-    //    SetDropdownSongTitles(songList); 
-    //    SetDropdownPlayerCount();
-    //}
 
     /// <summary>
     /// 

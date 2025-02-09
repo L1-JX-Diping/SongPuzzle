@@ -1,0 +1,11 @@
+diff a/Assets/Scenes/Home.unity b/Assets/Scenes/Home.unity	(rejected hunks)
+@@ -447,8 +447,8 @@
+   serializedVersion: 6
+   m_Component:
+   - component: {fileID: 58334685}
+-  - component: {fileID: 58334686}
+   - component: {fileID: 58334687}
++  - component: {fileID: 58334686}
+   m_Layer: 5
+   m_Name: Scripts
+   m_TagString: Untagged

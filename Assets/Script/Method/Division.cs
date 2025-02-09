@@ -17,7 +17,7 @@ public class Division
     // for creating and exporting to file
     private List<Line> _lyrics = new List<Line>(); // lyrics information 
     // 
-    private float _clock = 3f; // Second per Beat
+    private float _clock = 3f; // Seconds per Beat
     private int _beat = 4; // 何拍子か？ Birthday song は 3 拍子
     private string _eofText = "GAME END.";
 
@@ -36,15 +36,6 @@ public class Division
 
         return _lyrics;
     }
-
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-    //    DoDivision();
-    //}
-
-    // Update is called once per frame
-    void Update(){ }
 
     /// <summary>
     /// 
@@ -73,7 +64,7 @@ public class Division
     /// </summary>
     void LoadLyricsFile()
     {
-        string[] lyricsLineList = Common.GetTXTFileLineList(_lyricsFileName);
+        string[] lyricsLineList = Common.GetTXTFileContents(_lyricsFileName);
 
         // Lyrics division
         CreateLyricsList(lyricsLineList);
@@ -145,7 +136,7 @@ public class Division
 
             /* match.Success なら
              * 小節数: bar と 時刻比率List: ratioList を抽出 */
-            // 表示「行」の小節数 `2` を bar に保存
+            // 表示行の小節数 `2` を bar に保存
             //int barCount = int.Parse(match.Groups[1].Value);
             int barCount = Common.ToInt(match.Groups[1].Value);
 
@@ -159,14 +150,14 @@ public class Division
             string lyrics = match.Groups[3].Value.Trim();
 
             // この歌詞行について part 情報をセット
-            List<Part> partInfoList = SetPartListForThisLine(ratioList, barCount, lyrics, lineTiming);
+            List<Part> partList = SetPartListForThisLine(ratioList, barCount, lyrics, lineTiming);
 
-            // lyricsList に追加
+            // Add to lyricsList 
             _lyrics.Add(new Line
             {
                 Timing = lineTiming,
                 Text = lyrics,
-                PartList = partInfoList
+                PartList = partList
             });
 
             // 次の行の開始時刻計算
@@ -204,8 +195,8 @@ public class Division
         foreach (float timeRatio in ratioList)
         {
             float haku = _beat * barCount; // この行の総拍数
-            float addSecond = timeRatio / haku;
-            float partStartTime = lineStartTime + addSecond;
+            float timeGap = timeRatio / haku;
+            float partStartTime = lineStartTime + timeGap;
             //Debug.Log($"ratioList:{timeRatio}, partStartTime:{partStartTime}");
 
             /* generate part List */

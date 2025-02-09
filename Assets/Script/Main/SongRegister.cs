@@ -10,7 +10,7 @@ public class SongRegister : MonoBehaviour
     void Start()
     {
         // Create Song.xml
-        //InitSongXml();
+        InitSongXml();
 
         //RegisterSong();
 
@@ -29,12 +29,12 @@ public class SongRegister : MonoBehaviour
     private void InitSongXml()
     {
         /* get parameters from TXT file */
-        string[] titleList = Common.GetTXTFileLineList(FileName.SongTitleList);
+        string[] titleList = Common.GetTXTFileContents(FileName.SongTitleList);
 
         /* create song list for XML */
         foreach (string title in titleList)
         {
-            _songs.Add(new Song()
+            _songs.Add(new Song
             {
                 Title = title,
             });

@@ -6,6 +6,8 @@ using Random = UnityEngine.Random;
 using Color = UnityEngine.Color;
 using System.IO;
 using System.Xml.Serialization;
+using System.Text;
+using System.Xml;
 
 public class Common 
 {
@@ -30,10 +32,26 @@ public class Common
         try
         {
             XmlSerializer serializer = new XmlSerializer(obj.GetType());
-            using (StreamWriter writer = new StreamWriter(path))
+
+            //// if using XmlWriter
+            //// Set Encording 日本語文字化けしないように
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                Encoding = new UTF8Encoding(false) // ★ BOMなしのUTF-8を指定
+            };
+            // Write to xml with utf-8 
+            using (XmlWriter writer = XmlWriter.Create(path, settings))
             {
                 serializer.Serialize(writer, obj);
             }
+
+            // if using StreamWriter
+            // Write to xml with utf-8 
+            //using (StreamWriter writer = new StreamWriter(path, false, new UTF8Encoding(false)))
+            //{
+            //    serializer.Serialize(writer, obj);
+            //}
 
             Debug.Log($"Lyrics data saved to XML {fileName}: {path}");
         }
@@ -101,13 +119,13 @@ public class Common
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public static string[] GetTXTFileLineList(string fileName)
+    public static string[] GetTXTFileContents(string fileName)
     {
         string filePath = GetFilePath(fileName);
         string[] lineList = null;
 
         // read line by line from  the file
-        lineList = File.ReadAllLines(filePath);
+        lineList = File.ReadAllLines(filePath, Encoding.UTF8);
         return lineList;
     }
 

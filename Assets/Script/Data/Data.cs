@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine.SocialPlatforms.Impl;
 
 /// <summary>
 /// Save Game Data
@@ -9,7 +11,12 @@ public class Data
     private Team _team;
     private Song _song;
     private Role _role;
+    private float _score;
+    private Mode _mode;
 
+    /// <summary>
+    /// the song to play
+    /// </summary>
     public Song Song { get => _song; set => _song = value; }
 
     /// <summary>
