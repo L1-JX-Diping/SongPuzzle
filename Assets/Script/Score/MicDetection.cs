@@ -36,7 +36,7 @@ public class MicDetection : MonoBehaviour
     private void LoadData()
     {
         _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
-        List<Line> lyricsList = _data.Song.Lyrics;
+        List<Line> lyricsList = _data.Song.Lines;
 
         /* Set correct parts */
         foreach (Line line in lyricsList)

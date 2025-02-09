@@ -17,8 +17,8 @@ public class Division
     // for creating and exporting to file
     private List<Line> _lyrics = new List<Line>(); // lyrics information 
     // 
-    private float _clock = 3f; // Seconds per Beat
-    private int _beat = 4; // 何拍子か？ Birthday song は 3 拍子
+    private float _beatSec = 3f; // (Seconds per Beat): beatSec = 60f / (float)BPM
+    private int _signature = 4; // 何拍子か？ Birthday song は 3 拍子
     private string _eofText = "GAME END.";
 
     /// <summary>
@@ -42,7 +42,7 @@ public class Division
     /// </summary>
     private void SaveData()
     {
-        _data.Song.Lyrics = _lyrics;
+        _data.Song.Lines = _lyrics;
         Common.ExportToXml(_data, FileName.XmlGameData); // update song lirics division
     }
 
@@ -103,12 +103,12 @@ public class Division
             string metaLine = lineList[0];
             // 曲の speed 情報
             int bpm = ParseMetaLine(metaLine, "bpm");
-            _beat = ParseMetaLine(metaLine, "beat");
+            _signature = ParseMetaLine(metaLine, "beat");
             int introEndBeat = ParseMetaLine(metaLine, "intro");
-            _clock = 60f / (float)bpm; // clock を計算
+            _beatSec = 60f / (float)bpm; // clock を計算
             // 歌詞スクロール計算の開始時刻
-            lineTiming = introEndBeat * _clock; // lyricsStartTime
-            Debug.Log($"Parsed BPM: {bpm} beats/min, beat: {_beat} count/bar, intro/startTime(init): {introEndBeat} beats, clock Interval: {_clock:F2} seconds");
+            lineTiming = introEndBeat * _beatSec; // lyricsStartTime
+            Debug.Log($"Parsed BPM: {bpm} beats/min, beat: {_signature} count/bar, intro/startTime(init): {introEndBeat} beats, clock Interval: {_beatSec:F2} seconds");
         }
         else
         {
@@ -161,7 +161,7 @@ public class Division
             });
 
             // 次の行の開始時刻計算
-            lineTiming += _beat * barCount * _clock; // 6拍 (3拍子 * 2小節) * 0.5秒/拍 = 3秒
+            lineTiming += _signature * barCount * _beatSec; // 6拍 (3拍子 * 2小節) * 0.5秒/拍 = 3秒
         }
 
         // 終了メッセージを追加
@@ -194,7 +194,7 @@ public class Division
         int i = 0;
         foreach (float timeRatio in ratioList)
         {
-            float haku = _beat * barCount; // この行の総拍数
+            float haku = _signature * barCount; // この行の総拍数
             float timeGap = timeRatio / haku;
             float partStartTime = lineStartTime + timeGap;
             //Debug.Log($"ratioList:{timeRatio}, partStartTime:{partStartTime}");

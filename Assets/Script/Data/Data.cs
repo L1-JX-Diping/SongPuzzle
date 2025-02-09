@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEngine.SocialPlatforms.Impl;
-
 /// <summary>
 /// Save Game Data
 /// </summary>
@@ -28,6 +24,10 @@ public class Data
     /// <summary>
     /// role assignment in THIS turn (game by game)
     /// </summary>
-    public Role Role { get => _role; set => _role = value; }
+    //public Role Role { get => _role; set => _role = value; }
+
+    public float Score { get => _score; set => _score = value; }
+
+    public Mode Mode { get => _mode; set => _mode = value; }
 }
 

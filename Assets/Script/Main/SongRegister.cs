@@ -57,7 +57,7 @@ public class SongRegister : MonoBehaviour
     {
         foreach (Song song in songs)
         {
-            Debug.Log($"title: {song.Title}, beat: {song.Beat}, BPM: {song.BPM}, Clock(beat/bar): {song.Clock}");
+            Debug.Log($"title: {song.Title}, beat: {song.Beat}, BPM: {song.BPM}, Clock(beat/bar): {song.beatSec}");
         }
     }
 

@@ -70,7 +70,7 @@ public class Calculation : MonoBehaviour
     /// </summary>
     private List<Part> GetCorrectPartList()
     {
-        List<Line> lyricsList = _data.Song.Lyrics;
+        List<Line> lyricsList = _data.Song.Lines;
         List<Part> correctParts = new List<Part>();
 
         foreach (Line line in lyricsList)

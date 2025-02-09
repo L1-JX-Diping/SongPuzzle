@@ -84,7 +84,7 @@ public class DisplayLyrics : MonoBehaviour
     {
         _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
 
-        _lyricsLines = _data.Song.Lyrics;
+        _lyricsLines = _data.Song.Lines;
         _playerList = _data.Team.MemberList;
 
         // for Debug
