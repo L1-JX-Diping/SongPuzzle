@@ -21,8 +21,8 @@ public class DisplayLyrics : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Division division = new Division();
-        division.DoDivision();
+        SetLyricsTiming division = new SetLyricsTiming();
+        division.DoDivisionWithTiming();
 
         // get division data
         LoadAndSetData();
@@ -135,7 +135,7 @@ public class DisplayLyrics : MonoBehaviour
                 {
                     Role role = part.Player.Role;
                     string hexColor = ColorUtility.ToHtmlStringRGB(role.Color);
-                    coloredText += $"<color=#{hexColor}>{Common.AvatarToLetter(role.Avatar)}{part.Word}</color> ";
+                    coloredText += $"<color=#{hexColor}>{Common.AvatarToLetter(role.Avatar)}{part.Text}</color> ";
                 }
 
                 _textField[i].text = coloredText.Trim();

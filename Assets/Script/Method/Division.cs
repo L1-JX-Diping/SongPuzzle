@@ -1,282 +1,135 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
-using System.Text.RegularExpressions;
+using UnityEngine.UIElements;
 
-/// <summary>
-/// output LyricsDivision.xml
-/// </summary>
 public class Division 
 {
-    // access to game data
-    Data _data = new Data();
-
-    /* private な変数たち */
-    private string _lyricsFileName = ""; // 入力ファイル名（Assetsフォルダ内）
-    // for loading from file
-    private List<Player> _playerList = new List<Player>();
-    // for creating and exporting to file
-    private List<Line> _lyrics = new List<Line>(); // lyrics information 
-    // 
-    private float _beatSec = 3f; // (Seconds per Beat): beatSec = 60f / (float)BPM
-    private int _signature = 4; // 何拍子か？ Birthday song は 3 拍子
-    private string _eofText = "GAME END.";
+    // divided lyrics
+    List<Part> _lyrics = new List<Part>();
+    int repeatAllowed = 3;
 
     /// <summary>
-    /// Divide lyrics into parts randomly and Save the data after dividing
+    /// Get divided lyrics (for accessing from other classes)
     /// </summary>
-    public List<Line> DoDivision()
+    /// <param name="songTitle"></param>
+    /// <returns></returns>
+    public List<Part> DivideLyrics(string songTitle)
     {
-        // initiallize game data such as _playerRole
-        LoadData();
+        // load whole lyrics from file
+        string lyricsText = GetWholeLyrics(songTitle);
 
-        LoadLyricsFile(); // Load lyrics 
+        // divide lyrics randomly
+        RandomLyricsDivision(lyricsText, 3, 8);
 
-        // Save information to files
-        SaveData();
+        // assign role randomly
+        RandomRoleAssignment();
 
         return _lyrics;
     }
 
     /// <summary>
-    /// 
+    /// Get lyrics and set as string
     /// </summary>
-    private void SaveData()
+    /// <param name="songTitle"></param>
+    /// <returns></returns>
+    private string GetWholeLyrics(string songTitle)
     {
-        _data.Song.Lines = _lyrics;
-        Common.ExportToXml(_data, FileName.XmlGameData); // update song lirics division
+        string songName = songTitle.Replace(" ", "");
+        string fileName = songName + ".txt";
+
+        // Load whole lyrics line by line
+        string[] lyricsLineList = Common.GetTXTFileContents(fileName);
+        string lyricsWholeText = "";
+
+        foreach (string line in lyricsLineList)
+        {
+            lyricsWholeText += line + "\n";
+        }
+
+        return lyricsWholeText;
     }
 
     /// <summary>
-    /// 
+    /// Divide lyrics randomly and Set to _lyrics
     /// </summary>
-    private void LoadData()
+    /// <param name="lyricsText"></param>
+    /// <param name="min"></param>
+    /// <param name="max"></param>
+    private void RandomLyricsDivision(string lyricsText, int min, int max)
     {
-        _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
+        // letter of each Part > 0: player has to sing, each part must have more than one letter
+        if (min <= 0) { min = 1; }
 
-        _playerList = _data.Team.MemberList;
+        string dividedText = "";
+        int count = 0;
 
-        string songTitleNoSpace = _data.Song.Title.Replace(" ", "");
-        _lyricsFileName = "Lyrics-" + songTitleNoSpace + ".txt";
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    void LoadLyricsFile()
-    {
-        string[] lyricsLineList = Common.GetTXTFileContents(_lyricsFileName);
-
-        // Lyrics division
-        CreateLyricsList(lyricsLineList);
-
-        // Debug
-        //DebugToConsole();
-
-    }
-
-    private void DebugToConsole()
-    {
-        Debug.Log("Lyrics: \n");
-        foreach (Line line in _lyrics)
+        // lyricsText.Length: the number of Char Object in string text
+        for (int charIndex = 0; charIndex < lyricsText.Length; )
         {
-            Debug.Log(line.Timing + ", " + line.Text);
-        }
+            // count of letter
+            count = Random.Range(min, max);
 
-        Debug.Log($"Loaded {_lyrics.Count} lyrics from {_lyricsFileName}");
-    }
+            // for no error such as "out of range"
+            //if (count > lyricsText.Length - charIndex)
+            //{
+            //    count = lyricsText.Length - charIndex;
+            //}
 
-    private void CreateLyricsList(string[] lineList)
-    {
-        float lineTiming = 0f;
+            // clear dividedText 
+            dividedText = "";
 
-        // 前奏 intro 部分用
-        _lyrics.Add(new Line 
-        { 
-            Timing = 0.0f, 
-            Text = "" 
-        });
-
-        // meta info part (1行目) の処理
-        // bpm と intro を取得
-        if (lineList.Length > 0 && lineList[0].StartsWith("#"))
-        {
-            string metaLine = lineList[0];
-            // 曲の speed 情報
-            int bpm = ParseMetaLine(metaLine, "bpm");
-            _signature = ParseMetaLine(metaLine, "beat");
-            int introEndBeat = ParseMetaLine(metaLine, "intro");
-            _beatSec = 60f / (float)bpm; // clock を計算
-            // 歌詞スクロール計算の開始時刻
-            lineTiming = introEndBeat * _beatSec; // lyricsStartTime
-            Debug.Log($"Parsed BPM: {bpm} beats/min, beat: {_signature} count/bar, intro/startTime(init): {introEndBeat} beats, clock Interval: {_beatSec:F2} seconds");
-        }
-        else
-        {
-            Debug.LogError("Meta information not found in the first line.");
-            return;
-        }
-
-        // lyrics part (2 行目以降) の処理
-        // 歌詞の表示開始時間情報付き lyricsList を作成
-        for (int i = 1; i < lineList.Length; i++)
-        {
-            string lyricsInfo = lineList[i];
-            // Line ごとに更新
-            List<int> ratioList = new List<int>();
-
-            // 正規表現を使用してデータを抽出 
-            // 例: 2[0,1,3,4]Happy birthday to you
-            Regex regex = new Regex(@"(\d+)\[([0-9,]+)\](.*)");
-            Match match = regex.Match(lyricsInfo);
-            if (!match.Success)
+            // divide lyrics
+            for (int x = 0; x < count; charIndex++, x++)
             {
-                Debug.LogError("match unsuccessful. Please write lyrics information to input file like \"2[0,1,3,4]Happy birthday to you\"");
-                continue;
+                if (charIndex > lyricsText.Length - 1) break;
+                dividedText += lyricsText[charIndex];
             }
+            // debug
+            Debug.Log($"Lyrics divided : {dividedText}, at index {charIndex} of whole lyrics");
 
-            /* match.Success なら
-             * 小節数: bar と 時刻比率List: ratioList を抽出 */
-            // 表示行の小節数 `2` を bar に保存
-            //int barCount = int.Parse(match.Groups[1].Value);
-            int barCount = Common.ToInt(match.Groups[1].Value);
-
-            foreach (string timeRatio in match.Groups[2].Value.Split(','))
-            {
-                // パート開始タイミング `[0,1,3,4]` をリストに変換
-                //ratioList.Add(int.Parse(timeRatio));
-                ratioList.Add(Common.ToInt(timeRatio));
-            }
-            // 残りの文字列 "Happy birthday to you" を歌詞として取得
-            string lyrics = match.Groups[3].Value.Trim();
-
-            // この歌詞行について part 情報をセット
-            List<Part> partList = SetPartListForThisLine(ratioList, barCount, lyrics, lineTiming);
-
-            // Add to lyricsList 
-            _lyrics.Add(new Line
-            {
-                Timing = lineTiming,
-                Text = lyrics,
-                PartList = partList
-            });
-
-            // 次の行の開始時刻計算
-            lineTiming += _signature * barCount * _beatSec; // 6拍 (3拍子 * 2小節) * 0.5秒/拍 = 3秒
-        }
-
-        // 終了メッセージを追加
-        //float endTime = lyricsStartTime + lines.Length * clock;
-        _lyrics.Add(new Line
-        {
-            Timing = lineTiming,
-            Text = _eofText
-        });
-        _lyrics.Add(new Line
-        {
-            Timing = lineTiming + 2f,
-            Text = ""
-        });
-
-    }
-
-    private List<Part> SetPartListForThisLine(List<int> ratioList, int barCount, string lyrics, float lineStartTime)
-    {
-        // パート色割り当て用
-        List<int> order = CreateRandomNumList(_playerList.Count);
-        int index = 0;
-
-        /* LyricLineInfo の partList 情報生成*/
-        List<Part> partInfoList = new List<Part>();
-        //partInfoList = new List<LyricPartInfo>();
-
-        // この行の歌詞を単語ごとに分割
-        string[] wordList = lyrics.Split(' ');
-        int i = 0;
-        foreach (float timeRatio in ratioList)
-        {
-            float haku = _signature * barCount; // この行の総拍数
-            float timeGap = timeRatio / haku;
-            float partStartTime = lineStartTime + timeGap;
-            //Debug.Log($"ratioList:{timeRatio}, partStartTime:{partStartTime}");
-
-            /* generate part List */
-            // lyrics(word) of this part
-            string word = wordList[i];
-            // if index out of range --> order をもう一度始めから回す
-            if (index > order.Count) index = 0;
-            // select a player from _playerList 
-            Player player= _playerList[order[index]];
-
-            //Debug.Log($"add _markDict: {Common.ToColorName(color)}, {mark}");
-
-            // part 情報格納
+            // treat the segmentation as a music part
             Part part = new Part
             {
-                Timing = partStartTime,
-                Word = word,
-                Player = player
+                Text = dividedText
             };
 
-            partInfoList.Add(part);
-            i++;
+            // Add to _lyrics
+            _lyrics.Add(part);
+        }
+    }
+
+    /// <summary>
+    /// Update _lyrics by adding role assignment information
+    /// </summary>
+    private void RandomRoleAssignment()
+    {
+        // get game data
+        Data data = new Data();
+        data = (Data)Common.LoadXml(data.GetType(), FileName.XmlGameData);
+
+        // the number of players
+        int playerCount = data.Team.CountMembers;
+
+        // order of player No 
+        List<int> roleOrder = Common.GetRandomRoleOrder(playerCount, repeatAllowed);
+
+        // Assign role to each Part following order[]
+        int index = 0;
+        foreach (Part part in _lyrics)
+        {
+            // if index out of range --> order ��������x�n�߂����
+            if (index > roleOrder.Count - 1) { index = 0; }
+
+            // get player(role) information 
+            int playerNo = roleOrder[index];
+            Player player = data.Team.MemberList[playerNo];
+
+            // add player(role) information to each Part in _lyrics
+            part.Player = player;
+
+            // update index
             index++;
         }
-
-        return partInfoList;
-    }
-
-    List<int> CreateRandomNumList(int num)
-    {
-        List<int> resultList = new List<int>();
-        List<int> candidateList = GenerateCandidateList(num);
-        int maxLength = 20; // 作成するリストの長さ for parts(lyrics) of this line 
-        int maxRepeats = 2; // 同じ数字が連続できる最大回数
-
-        while (resultList.Count < maxLength)
-        {
-            int randomIndex = Random.Range(0, candidateList.Count);
-            int selectedNum = candidateList[randomIndex];
-
-            // 連続回数をチェック
-            if (resultList.Count >= maxRepeats &&
-                resultList[resultList.Count - 1] == selectedNum &&
-                resultList[resultList.Count - 2] == selectedNum)
-            {
-                // 条件を満たさない場合は再選択
-                continue;
-            }
-
-            // 条件を満たす場合、リストに追加
-            resultList.Add(selectedNum);
-        }
-
-        return resultList;
-    }
-
-    List<int> GenerateCandidateList(int num)
-    {
-        List<int> candidateList = new List<int>();
-
-        // 0から(num-1)までの整数をリストに追加
-        for (int i = 0; i < num; i++)
-        {
-            candidateList.Add(i);
-        }
-
-        return candidateList;
-    }
-
-    int ParseMetaLine(string metaLine, string key)
-    {
-        // 指定されたキーの値を正規表現で取得
-        Match match = Regex.Match(metaLine, $@"{key}\[(\d+)\]");
-        if (match.Success && int.TryParse(match.Groups[1].Value, out int value))
-        {
-            return value;
-        }
-
-        Debug.LogWarning($"Failed to parse {key} from: {metaLine}");
-        return 0;
     }
 
 }

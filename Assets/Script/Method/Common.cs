@@ -8,6 +8,7 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Text;
 using System.Xml;
+using System.Threading;
 
 public class Common 
 {
@@ -15,6 +16,61 @@ public class Common
     private static List<Color> _availableColors = new List<Color> { Color.green, Color.red, Color.blue, Color.yellow, Color.magenta, Color.cyan };
 
     public static List<Color> AvailableColors { get => _availableColors; set => _availableColors = value; }
+
+    /// <summary>
+    /// Get random index list (player count, allowed number of continuous assign)
+    /// </summary>
+    /// <param name="roleCount"></param>
+    /// <param name="repeatAllowed"></param>
+    /// <returns></returns>
+    public static List<int> GetRandomRoleOrder(int roleCount, int repeatAllowed)
+    {
+        List<int> result = new List<int>();
+        // candidate 候補
+        List<int> candidateNums = GenerateCandidateList(roleCount);
+        int listLen = 20; // 作成するリストの長さ for parts(lyrics) of this line 
+
+        while (result.Count < listLen)
+        {
+            int roleNo = Random.Range(0, candidateNums.Count);
+            int selectedNum = candidateNums[roleNo];
+
+            // How many times same player repeated already? 
+            if (result.Count >= repeatAllowed)
+            {
+                int count = 0;
+                // Check: 1 つ前, 2 つ前... と辿って比較
+                for (int i = 1; i <= repeatAllowed; i++)
+                {
+                    if (result[result.Count - i] == selectedNum) { count += 1; }
+                }
+                // Reselect
+                if (count == repeatAllowed) continue;
+            }
+
+            // maxRepeats 回以上連続同じ人にパート割り当てがない場合 Add
+            result.Add(selectedNum);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// 0 から (maxNum - 1) までの整数のリスト: [0, 1, 2,..., maxNum-1]
+    /// </summary>
+    /// <param name="maxNum"></param>
+    /// <returns></returns>
+    public static List<int> GenerateCandidateList(int maxNum)
+    {
+        List<int> candidateList = new List<int>();
+
+        for (int i = 0; i < maxNum; i++)
+        {
+            candidateList.Add(i);
+        }
+
+        return candidateList;
+    }
 
     /// <summary>
     /// Save information to XML file

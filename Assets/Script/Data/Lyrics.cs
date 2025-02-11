@@ -5,6 +5,13 @@ using System.Threading;
 /// </summary>
 public class Lyrics 
 {
-    Part _part;
-    Bar _bar;
+    private string _text = "";
+    private Role _role;
+
+    /// <summary>
+    /// Lyrics text
+    /// </summary>
+    public string Text { get => _text; set => _text = value; }
+
+    public Role Role { get => _role; set => _role = value; }
 }

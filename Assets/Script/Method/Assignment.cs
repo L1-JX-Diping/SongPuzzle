@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Assign role to players and Save(Update) data
+/// </summary>
 public class Assignment 
 {
     // access to game data
@@ -12,11 +15,6 @@ public class Assignment
     // to access game data
     private int _playerCount = 0;
     private List<Player> _playerList = new List<Player>(); // 割り当て情報
-
-    void Start()
-    {
-        //DoAssignment();
-    }
 
     /// <summary>
     /// assign role to players and save the data
@@ -34,22 +32,22 @@ public class Assignment
     }
 
     /// <summary>
-    /// 
-    /// </summary>
-    private void SaveDataToFile()
-    {
-        _data.Team.MemberList = _playerList; // player role added
-        Common.ExportToXml(_data, FileName.XmlGameData); // update player role
-    }
-
-    /// <summary>
-    /// Set game data to use in this class
+    /// Set game data to parameter used in this class
     /// </summary>
     private void LoadData()
     {
         _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
         _playerCount = _data.Team.CountMembers;
         _playerList = _data.Team.MemberList; // already include players' name
+    }
+
+    /// <summary>
+    /// Save data to file
+    /// </summary>
+    private void SaveDataToFile()
+    {
+        _data.Team.MemberList = _playerList; // player role added
+        Common.ExportToXml(_data, FileName.XmlGameData); // update player role
     }
 
     /// <summary>

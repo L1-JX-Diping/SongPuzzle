@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,12 +17,15 @@ public class ShowSample : MonoBehaviour
         Assignment assignment = new Assignment();
         assignment.DoAssignment();
 
-        // part division
-        Division division = new Division();
-        List<Line> lyrics = division.DoDivision();
-
         // load lyrics division data after lyrics divided into parts
         LoadData();
+
+        // part division
+        //SetLyricsTiming division = new SetLyricsTiming();
+        //List<Line> lyrics = division.DoDivisionWithTiming();
+        Division division = new Division();
+        List<Part> lyrics = division.DivideLyrics(_data.Song.Title);
+
         //List<Line> lyrics = _data.Song.Lyrics;
 
         // Display the result (not in scroll, whole lyrics will appear at the same time)
@@ -38,6 +42,28 @@ public class ShowSample : MonoBehaviour
     {
         // ÉQÅ[ÉÄâÊñ Ç÷ GO
         SceneManager.LoadScene("Home");
+    }
+
+    /// <summary>
+    /// Display the result (not in scroll, whole lyrics will appear at the same time)
+    /// </summary>
+    /// <param name="lyrics"></param>
+    private void DisplayWholeLyrics(List<Part> lyrics)
+    {
+        // A line of colored lyrics
+        string wholeLyrics = _data.Song.Title + "\n";
+
+        // Create colored text
+        foreach (Part part in lyrics)
+        {
+            string text = GetColoredPartText(part);
+            wholeLyrics += text;
+        }
+
+        // Display on the screen 
+        //TextMeshProUGUI textField = GameObject.Find("Lyrics").GetComponent<TextMeshProUGUI>();
+        Text textField = GameObject.Find("Line").GetComponent<Text>();
+        textField.text = wholeLyrics.Trim();
     }
 
     /// <summary>
@@ -68,15 +94,30 @@ public class ShowSample : MonoBehaviour
     /// <returns></returns>
     private static string GetColoredLine(Line line)
     {
-        string lineText = "";
+        string lyricsText = "";
         foreach (Part part in line.PartList)
         {
             Role role = part.Player.Role;
             string hexColor = ColorUtility.ToHtmlStringRGB(role.Color);
-            lineText += $"<color=#{hexColor}>{Common.AvatarToLetter(role.Avatar)}{part.Word}</color> ";
+            lyricsText += $"<color=#{hexColor}>{Common.AvatarToLetter(role.Avatar)}{part.Text}</color> ";
         }
 
-        return lineText;
+        return lyricsText;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="part"></param>
+    /// <returns></returns>
+    private static string GetColoredPartText(Part part)
+    {
+        string lyricsText = "";
+        Role role = part.Player.Role;
+        string hexColor = ColorUtility.ToHtmlStringRGB(role.Color);
+        lyricsText += $"<color=#{hexColor}>{Common.AvatarToLetter(role.Avatar)}{part.Text}</color> ";
+
+        return lyricsText;
     }
 
     /// <summary>
@@ -87,9 +128,4 @@ public class ShowSample : MonoBehaviour
         _data = (Data)Common.LoadXml(_data.GetType(), FileName.XmlGameData);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
