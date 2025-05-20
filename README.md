@@ -39,7 +39,7 @@ STEP 0. スマホにマイクを人数分接続する。マイクはWebカメラ
 
 ＊ Web GUI 化
 
-内容：Song Puzzleの歌詞分け機能を抽出したWebサービス
+内容：Song Puzzleの歌詞分担機能を抽出したWebサービス
 
 公開ページ: https://vocalassignment.onrender.com/
 
