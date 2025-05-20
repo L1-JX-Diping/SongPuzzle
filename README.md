@@ -7,6 +7,7 @@ Unity Editor Version: 2022.3.50f1
 Environment for Developing: Windows
 
 --追加説明--
+
 ＊ Android用スマホアプリ「Song Puzzle」
 複数人でカラオケデュエットを楽しめます。パート分けは、システムが自動で割り振るので完全ランダムです。
 
