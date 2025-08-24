@@ -13,7 +13,10 @@ Environment for Developing: Windows
 複数人でカラオケデュエットを楽しめます。パート分けは、システムが自動で割り振るので完全ランダムです。
 
 ＊デモビデオ(Youtubeリンク)
-https://youtube.com/shorts/fu2sBD-cvhc?feature=share
+
+Demo Version 01: https://www.youtube.com/shorts/fu2sBD-cvhc
+
+Demo Version 02: https://youtube.com/shorts/aLwKepbtC3I
 
 ＊経緯
 
